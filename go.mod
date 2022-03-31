@@ -1,4 +1,4 @@
-module github.com/sansecio/go-commerce
+module github.com/sansecio/gocommerce
 
 go 1.17
 
