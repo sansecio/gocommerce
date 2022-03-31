@@ -1,0 +1,46 @@
+<config>
+    <global>
+        <install>
+            <date><![CDATA[Thu, 25 Apr 2019 09:14:04 +0000]]></date>
+        </install>
+        <crypt>
+            <key><![CDATA[sdfsdf]]></key>
+        </crypt>
+        <disable_local_modules>false</disable_local_modules>
+        <resources>
+            <db>
+                <table_prefix></table_prefix>
+            </db>
+            <default_setup>
+                <connection>
+                    <host><![CDATA[db]]></host>
+                    <username><![CDATA[userhere]]></username>
+                    <password></password>
+                    <dbname><![CDATA[dbnamehere]]></dbname>
+                    <initStatements><![CDATA[SET NAMES utf8]]></initStatements>
+                    <model><![CDATA[mysql4]]></model>
+                    <type><![CDATA[pdo_mysql]]></type>
+                    <pdoType></pdoType>
+                    <active>1</active>
+                </connection>
+            </default_setup>
+        </resources>
+        <session_save><![CDATA[files]]></session_save>
+    </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <frontName><![CDATA[admin]]></frontName>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <default>
+        <dev>
+            <template>
+                <allow_symlink>1</allow_symlink>
+            </template>
+        </dev>
+    </default>
+</config>
