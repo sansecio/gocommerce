@@ -9,8 +9,16 @@ import (
 	"gopkg.in/xmlpath.v2"
 )
 
-func ParseMagento1Config(path string) (*StoreConfig, error) {
-	xmlFile, err := os.Open(path)
+// func (m1 *magento1) BaseURLs(docroot string) ([]string, error) {
+// 	return []string{}, fmt.Errorf("not implemented yet")
+// }
+
+// func (m1 *magento1) Version(docroot string) (string, error) {
+// 	return "", fmt.Errorf("not implemented yet")
+// }
+
+func (m1 *magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
+	xmlFile, err := os.Open(cfgPath)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +39,7 @@ func ParseMagento1Config(path string) (*StoreConfig, error) {
 	port := 3306
 
 	if u == "" || dbname == "" {
-		return nil, fmt.Errorf("XML parse error for %s", path)
+		return nil, fmt.Errorf("XML parse error for %s", cfgPath)
 	}
 
 	// if strings.Contains(h, ":") {
@@ -46,12 +54,14 @@ func ParseMagento1Config(path string) (*StoreConfig, error) {
 	// }
 
 	return &StoreConfig{
-		DBHost:    h,
-		DBUser:    u,
-		DBPass:    p,
-		DBName:    dbname,
-		DBPrefix:  prefix,
-		DBPort:    port,
+		DB: &DBConfig{
+			Host:   h,
+			User:   u,
+			Pass:   p,
+			Name:   dbname,
+			Prefix: prefix,
+			Port:   port,
+		},
 		AdminSlug: slug,
 	}, nil
 }

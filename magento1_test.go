@@ -6,31 +6,26 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestM1ConfigSimpleDB(t *testing.T) {
-	src := fixtureBase + "magento1/local.xml"
-	cfg, err := ParseMagento1Config(src)
-	assert.NoError(t, err)
-	assert.Equal(t, "app:sdkjfhjksdfjk@tcp(localhost:3306)/mag1?allowOldPasswords=true", cfg.DSN())
-	assert.Equal(t, "s3cr3tfrontname", cfg.AdminSlug)
-}
+var m1store = magento1{}
 
-func TestM1ConfigHostWithPort(t *testing.T) {
-	src := fixtureBase + "magento1/local.xml.hostport"
-	cfg, err := ParseMagento1Config(src)
-	assert.NoError(t, err)
-	assert.Equal(t, "app:werrrwww@tcp(localhost:3307)/mag1?allowOldPasswords=true", cfg.DSN())
-}
+func TestM1Configs(t *testing.T) {
+	tests := []struct{ path, want, slug string }{
+		{"local.xml", "app:sdkjfhjksdfjk@tcp(localhost:3306)/mag1?allowOldPasswords=true", "s3cr3tfrontname"},
+		{"local.xml.hostport", "app:werrrwww@tcp(localhost:3307)/mag1?allowOldPasswords=true", "willem"},
+		{"local.xml.nopass", "userhere:@tcp(db:3306)/dbnamehere?allowOldPasswords=true", "admin"},
+	}
 
-func TestM1EmptyPassword(t *testing.T) {
-	src := fixtureBase + "magento1/local.xml.nopass"
-	cfg, err := ParseMagento1Config(src)
-	assert.NoError(t, err)
-	assert.Equal(t, "userhere:@tcp(db:3306)/dbnamehere?allowOldPasswords=true", cfg.DSN())
+	for _, test := range tests {
+		src := fixtureBase + "magento1/app/etc/" + test.path
+		cfg, err := m1store.ParseConfig(src)
+		assert.NoError(t, err)
+		assert.Equal(t, test.want, cfg.DB.DSN())
+		assert.Equal(t, test.slug, cfg.AdminSlug)
+	}
 }
 
 func TestM1BogusConfig(t *testing.T) {
-	src := fixtureBase + "magento1/local.xml.bogus"
-	cfg, err := ParseMagento1Config(src)
-	assert.Nil(t, cfg)
+	cfg, err := m1store.ParseConfig(fixtureBase + "magento1/app/etc/local.xml.bogus")
 	assert.Error(t, err)
+	assert.Nil(t, cfg)
 }

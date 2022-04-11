@@ -11,13 +11,13 @@ var defaultSockets = []string{
 }
 
 // NB copy StoreConfig, as we may modify it
-func ConnectDB(cfg StoreConfig) (*sql.DB, error) {
+func ConnectDB(cfg DBConfig) (*sql.DB, error) {
 	// Mimic libmysql behavior, where "localhost" is overridden with
 	// system specific unix socket.
-	if cfg.DBHost == "localhost" || cfg.DBHost == "" {
+	if cfg.Host == "localhost" || cfg.Host == "" {
 		for _, s := range defaultSockets {
 			if isSocket(s) {
-				cfg.DBHost = s
+				cfg.Host = s
 				break
 			}
 		}

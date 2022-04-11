@@ -2,64 +2,114 @@ package gocommerce
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
 type (
-	ConfigParser func(path string) (*StoreConfig, error)
-	StoreConfig  struct {
-		DBHost    string
-		DBUser    string
-		DBPass    string
-		DBName    string
-		DBPrefix  string
-		DBPort    int
+	DBConfig struct {
+		Host   string
+		User   string
+		Pass   string
+		Name   string
+		Prefix string
+		Port   int
+	}
+
+	StoreConfig struct {
+		DB        *DBConfig
 		AdminSlug string
 	}
+
 	Store struct {
-		Platform *Platform
 		DocRoot  string
+		Platform PlatformInterface
 		Config   *StoreConfig
 	}
 
-	Platform struct {
-		Name         string
-		ConfigFile   string
-		Magerun      string
-		ConfigParser ConfigParser
+	basePlatform struct {
+		name       string
+		configPath string
+		uniquePath string // A relative path that is sufficiently unique to identify a particular platform
+	}
+
+	magento1 struct {
+		basePlatform
+		magerun string
+	}
+
+	magento2 struct {
+		basePlatform
+		Magerun string
+	}
+	// Wordpress struct {
+	// 	baseSystem
+	// }
+
+	PlatformInterface interface {
+		Name() string
+		ParseConfig(cfgPath string) (*StoreConfig, error)
+		// Version(docroot string) (string, error)
+		// BaseURLs(docroot string) ([]string, error)
+		ConfigPath() string
+		UniquePath() string
 	}
 )
 
-var (
-	AllPlatforms = []*Platform{
-		{"Magento1", "/app/etc/local.xml", "n98-magerun", ParseMagento1Config},
-		{"Magento2", "/app/etc/env.php", "n98-magerun2", nil},
-	}
-)
-
-func (s *Store) ConfigPath() string {
-	return filepath.Join(s.DocRoot, s.Platform.ConfigFile)
+// func (b *basePlatform) Detect(docroot string) bool {
+// 	return pathExists(filepath.Join(docroot, b.configPath))
+// }
+func (b *basePlatform) Name() string {
+	return b.name
+}
+func (b *basePlatform) ConfigPath() string {
+	return b.configPath
+}
+func (b *basePlatform) UniquePath() string {
+	return b.uniquePath
 }
 
-func (cfg *StoreConfig) DSN() string {
-	if cfg.DBUser == "" || cfg.DBName == "" {
+var (
+	Magento1 = magento1{
+		basePlatform{
+			"Magento1",
+			"app/etc/local.xml",
+			"app/etc/local.xml",
+		},
+		"n98-magerun"}
+
+	Magento2 = magento2{
+		basePlatform{
+			"Magento2",
+			"app/etc/env.php",
+			"app/etc/env.php",
+		},
+		"n98-magerun2"}
+
+	AllPlatforms = []PlatformInterface{
+		&Magento1,
+		&Magento2,
+	} // {"Magento1", "/app/etc/local.xml", "n98-magerun", ParseMagento1Config},
+	// {"Magento2", "/app/etc/env.php", "n98-magerun2", nil},
+
+)
+
+func (c *DBConfig) DSN() string {
+	if c.User == "" || c.Name == "" {
 		return ""
 	}
-	host := cfg.DBHost
+	host := c.Host
 	if host == "" {
 		host = "localhost"
 	}
-	port := cfg.DBPort
+	port := c.Port
 	if port == 0 {
 		port = 3306
 	}
 
 	var network, address string
-	if strings.Contains(cfg.DBHost, "/") {
+	if strings.Contains(c.Host, "/") {
 		network = "unix"
-		address = cfg.DBHost
+		address = c.Host
 	} else {
 		network = "tcp"
 		address = fmt.Sprintf("%s:%d", host, port)
@@ -67,32 +117,9 @@ func (cfg *StoreConfig) DSN() string {
 
 	// oldpasswords = Required for MySQL 4.0 servers, ugh...
 	return fmt.Sprintf("%s:%s@%s(%s)/%s?allowOldPasswords=true",
-		cfg.DBUser,
-		cfg.DBPass,
+		c.User,
+		c.Pass,
 		network,
 		address,
-		cfg.DBName)
-}
-
-func FindStore(docroot string) *Store {
-	for _, pl := range AllPlatforms {
-		path := filepath.Join(docroot, pl.ConfigFile)
-		if !pathExists(path) {
-			continue
-		}
-		var cfg *StoreConfig
-		if pl.ConfigParser != nil {
-			cfg, _ = pl.ConfigParser(path)
-			if cfg == nil { // parse error
-				continue
-			}
-		}
-		return &Store{pl, docroot, cfg}
-	}
-	return nil
-}
-
-func pathExists(p string) bool {
-	_, err := os.Stat(p)
-	return err == nil
+		c.Name)
 }
