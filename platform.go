@@ -34,12 +34,16 @@ type (
 
 	magento1 struct {
 		basePlatform
-		magerun string
+		Magerun string
 	}
 
 	magento2 struct {
 		basePlatform
 		Magerun string
+	}
+
+	prestashop struct {
+		basePlatform
 	}
 	// Wordpress struct {
 	// 	baseSystem
@@ -55,9 +59,9 @@ type (
 	}
 )
 
-// func (b *basePlatform) Detect(docroot string) bool {
-// 	return pathExists(filepath.Join(docroot, b.configPath))
-// }
+//	func (b *basePlatform) Detect(docroot string) bool {
+//		return pathExists(filepath.Join(docroot, b.configPath))
+//	}
 func (b *basePlatform) Name() string {
 	return b.name
 }
@@ -85,9 +89,18 @@ var (
 		},
 		"n98-magerun2"}
 
+	Prestashop = prestashop{
+		basePlatform{
+			"Prestashop",
+			"app/config/parameters.php",
+			"app/config/parameters.php",
+		},
+	}
+
 	AllPlatforms = []PlatformInterface{
 		&Magento1,
 		&Magento2,
+		&Prestashop,
 	} // {"Magento1", "/app/etc/local.xml", "n98-magerun", ParseMagento1Config},
 	// {"Magento2", "/app/etc/env.php", "n98-magerun2", nil},
 
