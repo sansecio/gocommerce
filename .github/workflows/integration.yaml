@@ -1,0 +1,27 @@
+name: Integration Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - magento2
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7.30
+        env:
+          MYSQL_DATABASE: integration
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: ''
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v3
+      - run: mysql -h127.0.0.1 -uroot integration < $GITHUB_WORKSPACE/fixture/magento2_integration/config.sql
+      - run: go test --tags=integration

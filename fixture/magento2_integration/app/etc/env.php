@@ -10,10 +10,10 @@ return [
         'table_prefix' => '',
         'connection' => [
             'default' => [
-                'host' => 'localhost',
-                'dbname' => 'magento2',
-                'username' => 'app',
-                'password' => 'sldfjlskdfklds',
+                'host' => '127.0.0.1',
+                'dbname' => 'integration',
+                'username' => 'root',
+                'password' => '',
                 'model' => 'mysql4',
                 'engine' => 'innodb',
                 'initStatements' => 'SET NAMES utf8;',
@@ -50,21 +50,5 @@ return [
     ],
     'install' => [
         'date' => 'Fri, 25 Jan 2019 15:55:50 +0000'
-    ],
-    'system' => [
-        'default' => [
-            'web' => [
-                'secure' => [
-                    'base_url' => 'https://sansec.io/',
-                ]
-            ]
-	],
-        'api' => [
-            'web' => [
-                'secure' => [
-                    'base_url' => 'https://api.sansec.io/',
-                ]
-            ]
-	]
     ]
 ];

@@ -52,8 +52,8 @@ type (
 	PlatformInterface interface {
 		Name() string
 		ParseConfig(cfgPath string) (*StoreConfig, error)
-		// Version(docroot string) (string, error)
-		// BaseURLs(docroot string) ([]string, error)
+		Version(docroot string) (string, error)
+		BaseURLs(docroot string) ([]string, error)
 		ConfigPath() string
 		UniquePath() string
 	}
@@ -98,9 +98,9 @@ var (
 	}
 
 	AllPlatforms = []PlatformInterface{
-		&Magento1,
+		// &Magento1,
 		&Magento2,
-		&Prestashop,
+		//		&Prestashop,
 	} // {"Magento1", "/app/etc/local.xml", "n98-magerun", ParseMagento1Config},
 	// {"Magento2", "/app/etc/env.php", "n98-magerun2", nil},
 

@@ -6,7 +6,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var m2store = magento2{}
+var m2store = magento2{
+	basePlatform{
+		"Magento2",
+		"app/etc/env.php",
+		"app/etc/env.php",
+	},
+	"n98-magerun2",
+}
 
 func TestM2ConfigSimpleDB(t *testing.T) {
 	cfg, err := m2store.ParseConfig(fixtureBase + "magento2/app/etc/env.php")
@@ -35,4 +42,28 @@ func TestEmptyConfig(t *testing.T) {
 	cfg, err := m2store.ParseConfig(fixtureBase + "magento2/app/etc/empty.php")
 	assert.Error(t, err)
 	assert.Nil(t, cfg)
+}
+
+func TestGetMagentoVersionFromLockFile(t *testing.T) {
+	version, err := m2store.Version(fixtureBase + "magento2")
+	assert.Nil(t, err)
+	assert.Equal(t, "2.4.2-p2", version)
+}
+
+func TestGetMagentoVersionWithoutLockFile(t *testing.T) {
+	version, err := m2store.Version(fixtureBase + "magento2_no_lockfile")
+	assert.Nil(t, err)
+	assert.Equal(t, "2.4.2-p2", version)
+}
+
+func TestGetMagentoVersionWithoutSystemPackages(t *testing.T) {
+	version, err := m2store.Version(fixtureBase + "magento2_no_composer")
+	assert.Nil(t, err)
+	assert.Equal(t, "2.4.2-p2", version)
+}
+
+func TestGetMagentoBaseURLsFromConfig(t *testing.T) {
+	baseURLs, err := m2store.BaseURLs(fixtureBase + "magento2")
+	assert.Nil(t, err)
+	assert.ElementsMatch(t, []string{"https://sansec.io/", "https://api.sansec.io/"}, baseURLs)
 }
