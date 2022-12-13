@@ -98,12 +98,10 @@ var (
 	}
 
 	AllPlatforms = []PlatformInterface{
-		// &Magento1,
+		&Magento1,
 		&Magento2,
-		//		&Prestashop,
-	} // {"Magento1", "/app/etc/local.xml", "n98-magerun", ParseMagento1Config},
-	// {"Magento2", "/app/etc/env.php", "n98-magerun2", nil},
-
+		&Prestashop,
+	}
 )
 
 func (c *DBConfig) DSN() string {
