@@ -57,7 +57,7 @@ func TestGetMagentoVersionWithoutLockFile(t *testing.T) {
 }
 
 func TestGetMagentoVersionWithoutSystemPackages(t *testing.T) {
-	version, err := m2store.Version(fixtureBase + "magento2_no_composer")
+	version, err := m2store.Version(fixtureBase + "magento2_git_clone")
 	assert.Nil(t, err)
 	assert.Equal(t, "2.4.2-p2", version)
 }
