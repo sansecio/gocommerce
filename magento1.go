@@ -1,6 +1,7 @@
 package gocommerce
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -64,4 +65,12 @@ func (m1 *magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 		},
 		AdminSlug: slug,
 	}, nil
+}
+
+func (m1 *magento1) BaseURLs(docroot string) ([]string, error) {
+	return nil, errors.New("not implemented") // TODO
+}
+
+func (m1 *magento1) Version(docroot string) (string, error) {
+	return "", errors.New("not implemented") // TODO
 }

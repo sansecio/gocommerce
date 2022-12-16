@@ -4,6 +4,8 @@ go 1.17
 
 require github.com/stretchr/testify v1.7.1
 
+require github.com/go-sql-driver/mysql v1.5.0
+
 require (
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/google/go-cmp v0.5.7
