@@ -1,6 +1,7 @@
 package gocommerce
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -49,12 +50,21 @@ type (
 		Magerun string
 	}
 
+	shopware5 struct {
+		basePlatform
+	}
+
+	shopware6 struct {
+		basePlatform
+	}
+
 	prestashop struct {
 		basePlatform
 	}
-	// Wordpress struct {
-	// 	baseSystem
-	// }
+
+	woocommerce struct {
+		basePlatform
+	}
 
 	PlatformInterface interface {
 		Name() string
@@ -66,22 +76,6 @@ type (
 		TableChecks() []TableCheck
 	}
 )
-
-//	func (b *basePlatform) Detect(docroot string) bool {
-//		return pathExists(filepath.Join(docroot, b.configPath))
-//	}
-func (b *basePlatform) Name() string {
-	return b.name
-}
-func (b *basePlatform) ConfigPath() string {
-	return b.configPath
-}
-func (b *basePlatform) UniquePath() string {
-	return b.uniquePath
-}
-func (b *basePlatform) TableChecks() []TableCheck {
-	return []TableCheck{}
-}
 
 var (
 	Magento1 = magento1{
@@ -102,6 +96,22 @@ var (
 		"n98-magerun2",
 	}
 
+	Shopware5 = shopware5{
+		basePlatform{
+			"Shopware 5",
+			"config.php",
+			"engine/Shopware/Application.php",
+		},
+	}
+
+	Shopware6 = shopware6{
+		basePlatform{
+			"Shopware 6",
+			".env",
+			"vendor/shopware/core/Framework/ShopwareException.php",
+		},
+	}
+
 	Prestashop = prestashop{
 		basePlatform{
 			"Prestashop",
@@ -110,12 +120,51 @@ var (
 		},
 	}
 
+	WooCommerce = woocommerce{
+		basePlatform{
+			"WooCommerce",
+			"wp-config.php",
+			"wp-config.php",
+		},
+	}
+
 	AllPlatforms = []PlatformInterface{
 		&Magento1,
 		&Magento2,
+		&Shopware5,
+		&Shopware6,
 		&Prestashop,
+		&WooCommerce,
 	}
 )
+
+func (b *basePlatform) Name() string {
+	return b.name
+}
+
+func (b *basePlatform) ConfigPath() string {
+	return b.configPath
+}
+
+func (b *basePlatform) UniquePath() string {
+	return b.uniquePath
+}
+
+func (b *basePlatform) TableChecks() []TableCheck {
+	return []TableCheck{}
+}
+
+func (b *basePlatform) ParseConfig(cfgPath string) (*StoreConfig, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (b *basePlatform) BaseURLs(docroot string) ([]string, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (b *basePlatform) Version(docroot string) (string, error) {
+	return "", errors.New("not implemented")
+}
 
 func (c *DBConfig) DSN() string {
 	if c.User == "" || c.Name == "" {
