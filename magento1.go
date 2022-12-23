@@ -10,14 +10,6 @@ import (
 	"gopkg.in/xmlpath.v2"
 )
 
-// func (m1 *magento1) BaseURLs(docroot string) ([]string, error) {
-// 	return []string{}, fmt.Errorf("not implemented yet")
-// }
-
-// func (m1 *magento1) Version(docroot string) (string, error) {
-// 	return "", fmt.Errorf("not implemented yet")
-// }
-
 func (m1 *magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	xmlFile, err := os.Open(cfgPath)
 	if err != nil {
@@ -73,4 +65,8 @@ func (m1 *magento1) BaseURLs(docroot string) ([]string, error) {
 
 func (m1 *magento1) Version(docroot string) (string, error) {
 	return "", errors.New("not implemented") // TODO
+}
+
+func (m1 *magento1) TableChecks() []TableCheck {
+	return MagentoTables
 }

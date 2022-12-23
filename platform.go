@@ -26,6 +26,13 @@ type (
 		Config   *StoreConfig
 	}
 
+	TableCheck struct {
+		Name  string
+		ID    string
+		Value string
+		Where string
+	}
+
 	basePlatform struct {
 		name       string
 		configPath string
@@ -56,6 +63,7 @@ type (
 		BaseURLs(docroot string) ([]string, error)
 		ConfigPath() string
 		UniquePath() string
+		TableChecks() []TableCheck
 	}
 )
 
@@ -71,6 +79,9 @@ func (b *basePlatform) ConfigPath() string {
 func (b *basePlatform) UniquePath() string {
 	return b.uniquePath
 }
+func (b *basePlatform) TableChecks() []TableCheck {
+	return []TableCheck{}
+}
 
 var (
 	Magento1 = magento1{
@@ -79,7 +90,8 @@ var (
 			"app/etc/local.xml",
 			"app/etc/local.xml",
 		},
-		"n98-magerun"}
+		"n98-magerun",
+	}
 
 	Magento2 = magento2{
 		basePlatform{
@@ -87,7 +99,8 @@ var (
 			"app/etc/env.php",
 			"app/etc/env.php",
 		},
-		"n98-magerun2"}
+		"n98-magerun2",
+	}
 
 	Prestashop = prestashop{
 		basePlatform{

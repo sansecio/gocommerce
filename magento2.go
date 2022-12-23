@@ -83,6 +83,10 @@ func (m2 *magento2) Version(docroot string) (string, error) {
 	return getVersionFromJsonFile(docroot + "/composer.json")
 }
 
+func (m2 *magento2) TableChecks() []TableCheck {
+	return MagentoTables
+}
+
 func (m2 *magento2) getBaseURLsFromConfig(cfgPath string) ([]string, error) {
 	cm, err := phpcfg.ParsePath(cfgPath)
 	if err != nil {
