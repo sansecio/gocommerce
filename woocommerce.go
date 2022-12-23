@@ -48,6 +48,4 @@ func (w *woocommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
 			Prefix: matches["prefix"],
 		},
 	}, nil
-
-	return nil, nil
 }
