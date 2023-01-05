@@ -41,10 +41,7 @@ func FindStoreAtUniquePath(path string) *Store {
 
 func docrootToStore(docroot string, pl PlatformInterface) *Store {
 	cfgPath := filepath.Join(docroot, pl.ConfigPath())
-	cfg, e := pl.ParseConfig(cfgPath)
-	if e != nil {
-		return nil
-	}
+	cfg, _ := pl.ParseConfig(cfgPath)
 	return &Store{docroot, pl, cfg}
 }
 
