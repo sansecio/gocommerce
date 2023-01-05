@@ -73,7 +73,7 @@ var (
 	AllPlatforms = []PlatformInterface{
 		&Magento1{
 			basePlatform{
-				"Magento1",
+				"Magento 1",
 				"app/etc/local.xml",
 				"app/etc/local.xml",
 			},
@@ -81,7 +81,7 @@ var (
 		},
 		&Magento2{
 			basePlatform{
-				"Magento2",
+				"Magento 2",
 				"app/etc/env.php",
 				"app/etc/env.php",
 			},
@@ -103,14 +103,14 @@ var (
 		},
 		&Prestashop7{
 			basePlatform{
-				"Prestashop",
+				"Prestashop 7 ",
 				"app/config/parameters.php",
 				"app/config/parameters.php",
 			},
 		},
 		&WooCommerce{
 			basePlatform{
-				"Woocommerce",
+				"WooCommerce",
 				"wp-config.php",
 				"wp-config.php",
 			},
