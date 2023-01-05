@@ -9,7 +9,7 @@ import (
 	"gopkg.in/xmlpath.v2"
 )
 
-func (m1 *magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	xmlFile, err := os.Open(cfgPath)
 	if err != nil {
 		return nil, err
@@ -56,8 +56,4 @@ func (m1 *magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 		},
 		AdminSlug: slug,
 	}, nil
-}
-
-func (m1 *magento1) TableChecks() []TableCheck {
-	return MagentoTables
 }
