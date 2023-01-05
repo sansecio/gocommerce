@@ -188,7 +188,7 @@ func getVersionFromLockFile(lockFile string) (string, error) {
 }
 
 func isRootPackage(packageName string) bool {
-	match, _ := regexp.MatchString(`magento\/Magento2...?`, packageName)
+	match, _ := regexp.MatchString(`magento\/magento2...?`, packageName)
 	return match
 }
 
