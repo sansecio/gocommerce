@@ -13,7 +13,7 @@ var lookupRgx = map[string]string{
 	"prefix": `$?table_prefix\s*=\s*['"]([^']*?)['"]\s*;`,
 }
 
-func (w *Woocommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (w *WooCommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	data, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return nil, err

@@ -51,11 +51,11 @@ type (
 		basePlatform
 	}
 
-	Prestashop struct {
+	Prestashop7 struct {
 		basePlatform
 	}
 
-	Woocommerce struct {
+	WooCommerce struct {
 		basePlatform
 	}
 
@@ -101,14 +101,14 @@ var (
 				"vendor/shopware/core/Framework/ShopwareException.php",
 			},
 		},
-		&Prestashop{
+		&Prestashop7{
 			basePlatform{
 				"Prestashop",
 				"app/config/parameters.php",
 				"app/config/parameters.php",
 			},
 		},
-		&Woocommerce{
+		&WooCommerce{
 			basePlatform{
 				"Woocommerce",
 				"wp-config.php",
