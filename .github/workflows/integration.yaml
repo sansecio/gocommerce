@@ -32,4 +32,4 @@ jobs:
           mysql -h127.0.0.1 -uroot m2_integration < $GITHUB_WORKSPACE/fixture/magento2_integration/config.sql
 
       - name: Run Integration Tests
-      - run: go test --tags=integration
+        run: go test --tags=integration
