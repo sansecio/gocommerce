@@ -20,5 +20,16 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v3
-      - run: mysql -h127.0.0.1 -uroot integration < $GITHUB_WORKSPACE/fixture/magento2_integration/config.sql
-      - run: go test --tags=integration
+
+      - name: Create Integration Databases
+        run: |
+          mysql -h127.0.0.1 -uroot -e "create database m1_integration"
+          mysql -h127.0.0.1 -uroot -e "create database m2_integration"
+
+      - name: Import Fixtures
+        run: |
+          mysql -h127.0.0.1 -uroot m1_integration < $GITHUB_WORKSPACE/fixture/magento1_integration/config.sql
+          mysql -h127.0.0.1 -uroot m2_integration < $GITHUB_WORKSPACE/fixture/magento2_integration/config.sql
+
+      - name: Run Integration Tests
+        run: go test --tags=integration

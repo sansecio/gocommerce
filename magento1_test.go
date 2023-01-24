@@ -6,7 +6,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var m1store = magento1{}
+var m1store = Magento1{
+	basePlatform{
+		"Magento 1",
+		"app/etc/local.xml",
+		"app/etc/local.xml",
+	},
+	"n98-magerun2",
+}
 
 func TestM1Configs(t *testing.T) {
 	tests := []struct{ path, want, slug string }{

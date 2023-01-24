@@ -1,6 +1,7 @@
 package gocommerce
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -32,22 +33,31 @@ type (
 		uniquePath string // A relative path that is sufficiently unique to identify a particular platform
 	}
 
-	magento1 struct {
+	Magento1 struct {
 		basePlatform
 		Magerun string
 	}
 
-	magento2 struct {
+	Magento2 struct {
 		basePlatform
 		Magerun string
 	}
 
-	prestashop struct {
+	Shopware5 struct {
 		basePlatform
 	}
-	// Wordpress struct {
-	// 	baseSystem
-	// }
+
+	Shopware6 struct {
+		basePlatform
+	}
+
+	Prestashop7 struct {
+		basePlatform
+	}
+
+	WooCommerce struct {
+		basePlatform
+	}
 
 	PlatformInterface interface {
 		Name() string
@@ -59,50 +69,78 @@ type (
 	}
 )
 
-//	func (b *basePlatform) Detect(docroot string) bool {
-//		return pathExists(filepath.Join(docroot, b.configPath))
-//	}
+var (
+	AllPlatforms = []PlatformInterface{
+		&Magento1{
+			basePlatform{
+				"Magento 1",
+				"app/etc/local.xml",
+				"app/etc/local.xml",
+			},
+			"n98-magerun",
+		},
+		&Magento2{
+			basePlatform{
+				"Magento 2",
+				"app/etc/env.php",
+				"app/etc/env.php",
+			},
+			"n98-magerun2",
+		},
+		&Shopware5{
+			basePlatform{
+				"Shopware 5",
+				"config.php",
+				"engine/Shopware/Application.php",
+			},
+		},
+		&Shopware6{
+			basePlatform{
+				"Shopware 6",
+				".env",
+				"vendor/shopware/core/Framework/ShopwareException.php",
+			},
+		},
+		&Prestashop7{
+			basePlatform{
+				"Prestashop 7 ",
+				"app/config/parameters.php",
+				"app/config/parameters.php",
+			},
+		},
+		&WooCommerce{
+			basePlatform{
+				"WooCommerce",
+				"wp-config.php",
+				"wp-config.php",
+			},
+		},
+	}
+)
+
 func (b *basePlatform) Name() string {
 	return b.name
 }
+
 func (b *basePlatform) ConfigPath() string {
 	return b.configPath
 }
+
 func (b *basePlatform) UniquePath() string {
 	return b.uniquePath
 }
 
-var (
-	Magento1 = magento1{
-		basePlatform{
-			"Magento1",
-			"app/etc/local.xml",
-			"app/etc/local.xml",
-		},
-		"n98-magerun"}
+func (b *basePlatform) ParseConfig(cfgPath string) (*StoreConfig, error) {
+	return nil, errors.New("not implemented")
+}
 
-	Magento2 = magento2{
-		basePlatform{
-			"Magento2",
-			"app/etc/env.php",
-			"app/etc/env.php",
-		},
-		"n98-magerun2"}
+func (b *basePlatform) BaseURLs(docroot string) ([]string, error) {
+	return nil, errors.New("not implemented")
+}
 
-	Prestashop = prestashop{
-		basePlatform{
-			"Prestashop",
-			"app/config/parameters.php",
-			"app/config/parameters.php",
-		},
-	}
-
-	AllPlatforms = []PlatformInterface{
-		&Magento1,
-		&Magento2,
-		&Prestashop,
-	}
-)
+func (b *basePlatform) Version(docroot string) (string, error) {
+	return "", errors.New("not implemented")
+}
 
 func (c *DBConfig) DSN() string {
 	if c.User == "" || c.Name == "" {

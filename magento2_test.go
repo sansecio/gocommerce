@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var m2store = magento2{
+var m2store = Magento2{
 	basePlatform{
-		"Magento2",
+		"Magento 2",
 		"app/etc/env.php",
 		"app/etc/env.php",
 	},

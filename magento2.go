@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -27,7 +28,7 @@ type (
 	}
 )
 
-func (m2 *magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (m2 *Magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	cm, err := phpcfg.ParsePath(cfgPath)
 	if err != nil {
 		return nil, err
@@ -63,8 +64,8 @@ func (m2 *magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (m2 *magento2) BaseURLs(docroot string) ([]string, error) {
-	cfgPath := fmt.Sprintf("%s/%s", docroot, m2.ConfigPath())
+func (m2 *Magento2) BaseURLs(docroot string) ([]string, error) {
+	cfgPath := filepath.Join(docroot, m2.ConfigPath())
 
 	urls, err := m2.getBaseURLsFromDatabase(cfgPath)
 	if err == nil {
@@ -74,7 +75,7 @@ func (m2 *magento2) BaseURLs(docroot string) ([]string, error) {
 	return m2.getBaseURLsFromConfig(cfgPath)
 }
 
-func (m2 *magento2) Version(docroot string) (string, error) {
+func (m2 *Magento2) Version(docroot string) (string, error) {
 	version, err := getVersionFromLockFile(docroot + "/composer.lock")
 	if err == nil {
 		return version, nil
@@ -83,7 +84,7 @@ func (m2 *magento2) Version(docroot string) (string, error) {
 	return getVersionFromJsonFile(docroot + "/composer.json")
 }
 
-func (m2 *magento2) getBaseURLsFromConfig(cfgPath string) ([]string, error) {
+func (m2 *Magento2) getBaseURLsFromConfig(cfgPath string) ([]string, error) {
 	cm, err := phpcfg.ParsePath(cfgPath)
 	if err != nil {
 		return nil, err
@@ -108,7 +109,7 @@ func (m2 *magento2) getBaseURLsFromConfig(cfgPath string) ([]string, error) {
 	return nil, errors.New("base url(s) not found in config")
 }
 
-func (m2 *magento2) getBaseURLsFromDatabase(cfgPath string) ([]string, error) {
+func (m2 *Magento2) getBaseURLsFromDatabase(cfgPath string) ([]string, error) {
 	cfg, err := m2.ParseConfig(cfgPath)
 	if err != nil {
 		return nil, err
