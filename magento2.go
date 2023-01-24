@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -64,7 +65,7 @@ func (m2 *Magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
 }
 
 func (m2 *Magento2) BaseURLs(docroot string) ([]string, error) {
-	cfgPath := fmt.Sprintf("%s/%s", docroot, m2.ConfigPath())
+	cfgPath := filepath.Join(docroot, m2.ConfigPath())
 
 	urls, err := m2.getBaseURLsFromDatabase(cfgPath)
 	if err == nil {

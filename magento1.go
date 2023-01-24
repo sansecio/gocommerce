@@ -1,8 +1,10 @@
 package gocommerce
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -56,4 +58,37 @@ func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 		},
 		AdminSlug: slug,
 	}, nil
+}
+
+func (m1 *Magento1) BaseURLs(docroot string) ([]string, error) {
+	cfgPath := filepath.Join(docroot, m1.ConfigPath())
+
+	cfg, err := m1.ParseConfig(cfgPath)
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := ConnectDB(*cfg.DB)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := db.Query(`select distinct value from core_config_data where path like 'web/%secure/base_url'`)
+	if err != nil {
+		return nil, err
+	}
+
+	urls := []string{}
+	for rows.Next() {
+		var url string
+		if err := rows.Scan(&url); err == nil {
+			urls = append(urls, url)
+		}
+	}
+
+	if len(urls) > 0 {
+		return urls, nil
+	}
+
+	return nil, errors.New("base url(s) not found in database")
 }

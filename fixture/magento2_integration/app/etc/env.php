@@ -11,7 +11,7 @@ return [
         'connection' => [
             'default' => [
                 'host' => '127.0.0.1',
-                'dbname' => 'integration',
+                'dbname' => 'm2_integration',
                 'username' => 'root',
                 'password' => '',
                 'model' => 'mysql4',
