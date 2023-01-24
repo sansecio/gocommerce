@@ -9,7 +9,7 @@ import (
 
 const (
 	// DATABASE_URL=mysql://db-user-1:rhPb5xC2242444mFZDB@localhost:3306/db-1
-	DBURL = `(?m)^\s*DATABASE_URL\s*=\s*mysql://(.+?):(.+?)@(.+?):(\d+)/(.+)`
+	DBURL = `(?m)^\s*DATABASE_URL\s*="?\s*mysql://(.+?):(.+?)@(.+?):(\d+)/(.+?)"?$`
 )
 
 func (s *Shopware6) ParseConfig(cfgPath string) (*StoreConfig, error) {

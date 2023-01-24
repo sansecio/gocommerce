@@ -19,3 +19,17 @@ func TestConfigToDSN(t *testing.T) {
 		t.Errorf("ConfigToDSN() = %v, want %v", got, want)
 	}
 }
+
+func TestConfigWithQuotesToDSN(t *testing.T) {
+	want := DBConfig{
+		Host: "localhost",
+		Port: 3306,
+		Name: "DB",
+		User: "USER",
+		Pass: "PASS",
+	}
+
+	if got := dbConfigFromSource(t, fixtureBase+"/shopware6/configs/.env.quotes", &shopware6); got.DSN() != want.DSN() {
+		t.Errorf("ConfigToDSN() = %v, want %v", got.DSN(), want.DSN())
+	}
+}
