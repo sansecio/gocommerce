@@ -5,10 +5,15 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
 	"gopkg.in/xmlpath.v2"
+)
+
+const (
+	versionRegex = "(?m)public static function getVersionInfo[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',"
 )
 
 func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
@@ -91,4 +96,19 @@ func (m1 *Magento1) BaseURLs(docroot string) ([]string, error) {
 	}
 
 	return nil, errors.New("base url(s) not found in database")
+}
+
+func (m1 *Magento1) Version(docroot string) (string, error) {
+	dat, err := os.ReadFile(filepath.Join(docroot, "app/Mage.php"))
+	if err != nil {
+		return "", err
+	}
+
+	r := regexp.MustCompile(versionRegex)
+	m := r.FindAllStringSubmatch(string(dat), -1)
+	if len(m) == 0 || len(m[0]) < 5 {
+		return "", errors.New("could not determine magento 1 version")
+	}
+
+	return fmt.Sprintf("%s.%s.%s.%s", m[0][1], m[0][2], m[0][3], m[0][4]), nil
 }

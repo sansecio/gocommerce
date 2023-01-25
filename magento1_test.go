@@ -36,3 +36,9 @@ func TestM1BogusConfig(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, cfg)
 }
+
+func TestM1Version(t *testing.T) {
+	version, err := m1store.Version(fixtureBase + "magento1")
+	assert.Nil(t, err)
+	assert.Equal(t, "1.9.4.5", version)
+}
