@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/sansecio/gocommerce/phpcfg"
 )
@@ -42,11 +41,10 @@ func (m2 *Magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}
 
 	// Apparently you can stuff a port in the hostfield
-	if h, p := hostToHostPort(host); p > 0 {
+	if h, p, e := parseHostPort(host); p > 0 && e == nil {
 		port = p
 		host = h
 	}
-
 	if cm["root.db.connection.default.username"] == "" || cm["root.db.connection.default.dbname"] == "" {
 		return nil, fmt.Errorf("could not parse %s, missing user or db name", cfgPath)
 	}
@@ -196,18 +194,4 @@ func isRootPackage(packageName string) bool {
 func isSystemPackage(packageName string) bool {
 	match, _ := regexp.MatchString(`magento\/product-.*?-edition`, packageName)
 	return match
-}
-
-func hostToHostPort(host string) (string, int) {
-	if !strings.Contains(host, ":") {
-		return host, 0
-	}
-	t := strings.Split(host, ":")
-	if len(t) != 2 {
-		return t[0], 0
-	}
-	if p, err := strconv.Atoi(t[1]); err == nil {
-		return t[0], p
-	}
-	return t[0], 0
 }
