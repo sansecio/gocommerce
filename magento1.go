@@ -44,17 +44,6 @@ func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 		host = h
 	}
 
-	// // if strings.Contains(h, ":") {
-	// token := strings.SplitN(host, ":", 2)
-	// if len(token) == 2 {
-	// 	host = token[0]
-	// 	port, err = strconv.Atoi(token[1])
-	// 	if err != nil || port <= 0 || port > 65536 {
-	// 		port = 3306
-	// 	}
-	// }
-	// // }
-
 	return &StoreConfig{
 		DB: &DBConfig{
 			Host:   host,
