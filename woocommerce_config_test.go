@@ -48,6 +48,14 @@ func TestWooCommerceConfigToDSN(t *testing.T) {
 			Pass:   "xyz123",
 			Prefix: "wp_",
 		},
+		"wp-config6.php": {
+			Host:   "127.0.0.1",
+			Port:   3308,
+			Name:   "live_db",
+			User:   "live_user",
+			Pass:   "xyz123",
+			Prefix: "wp_",
+		},
 	}
 
 	for cnf, want := range tests {

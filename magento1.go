@@ -6,8 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strconv"
-	"strings"
 
 	"gopkg.in/xmlpath.v2"
 )
@@ -30,33 +28,27 @@ func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	// path := xmlpath.MustCompile("/config/global/resources/db/table_prefix")
 
 	prefix, _ := xmlpath.MustCompile("/config/global/resources/db/table_prefix").String(root)
-	u, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/username").String(root)
-	p, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/password").String(root)
-	h, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/host").String(root)
+	user, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/username").String(root)
+	pass, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/password").String(root)
+	host, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/host").String(root)
 	dbname, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/dbname").String(root)
 	slug, _ := xmlpath.MustCompile("/config/admin/routers/adminhtml/args/frontName").String(root)
-	port := 3306
 
-	if u == "" || dbname == "" {
+	if user == "" || dbname == "" {
 		return nil, fmt.Errorf("XML parse error for %s", cfgPath)
 	}
 
-	// if strings.Contains(h, ":") {
-	token := strings.SplitN(h, ":", 2)
-	if len(token) == 2 {
-		h = token[0]
-		port, err = strconv.Atoi(token[1])
-		if err != nil || port <= 0 || port > 65536 {
-			port = 3306
-		}
+	port := 3306
+	if h, p, e := parseHostPort(host); p > 0 && e == nil {
+		port = p
+		host = h
 	}
-	// }
 
 	return &StoreConfig{
 		DB: &DBConfig{
-			Host:   h,
-			User:   u,
-			Pass:   p,
+			Host:   host,
+			User:   user,
+			Pass:   pass,
 			Name:   dbname,
 			Prefix: prefix,
 			Port:   port,

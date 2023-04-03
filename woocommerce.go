@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-var lookupRgx = map[string]string{
+var wpLookupRgx = map[string]string{
 	"user":   `define\(\s*['"]DB_USER['"]\s*,\s*['"](\S+?)['"]\s*\);`,
 	"pass":   `define\(\s*['"]DB_PASSWORD['"]\s*,\s*['"]([^']{0,64})['"]\s*\);`,
 	"host":   `define\(\s*['"]DB_HOST['"]\s*,\s*['"](\S+?)['"]\s*\);`,
@@ -20,13 +20,19 @@ func (w *WooCommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}
 
 	matches := map[string]string{}
+	port := 3306
 
-	for k, v := range lookupRgx {
+	for k, v := range wpLookupRgx {
 		m := regexp.MustCompile(v).FindStringSubmatch(string(data))
 		if len(m) != 2 {
 			continue
 		}
 		matches[k] = m[1]
+	}
+
+	if h, p, e := parseHostPort(matches["host"]); p > 0 && e == nil {
+		matches["host"] = h
+		port = p
 	}
 
 	return &StoreConfig{
@@ -36,6 +42,7 @@ func (w *WooCommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
 			Pass:   matches["pass"],
 			Name:   matches["db"],
 			Prefix: matches["prefix"],
+			Port:   port,
 		},
 	}, nil
 }
