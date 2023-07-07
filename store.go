@@ -6,6 +6,22 @@ import (
 	"strings"
 )
 
+var commonDocRoots = []string{
+	"$DOCROOT",
+	"$HOME/public_html/current",
+	"$HOME/public_html",
+	"$HOME/www",
+	"$HOME/httpdocs",
+	"$HOME/master/Magento1Website",
+	"/app/$USER",
+	"$HOME/var/$SITE_NAME/logs",
+	"/var/www/html",
+	"$HOME/html",                       // jetrails
+	"/home/jetrails/*/html",            // jetrails
+	"$HOME/applications/*/public_html", // cloudways
+	"$PWD",                             // convenient when manually searching for current dr
+}
+
 func (s *Store) ConfigPath() string {
 	return filepath.Join(s.DocRoot, s.Platform.ConfigPath())
 }
@@ -37,6 +53,25 @@ func FindStoreAtUniquePath(path string) *Store {
 
 	}
 	return nil
+}
+
+// DiscoverStores searches several common docroot locations for stores
+func DiscoverStores() []*Store {
+	stores := []*Store{}
+	for _, dr := range commonDocRoots {
+		dr = os.ExpandEnv(dr)
+		// extrapolate possible globs
+		allPaths, err := filepath.Glob(dr)
+		if err != nil {
+			continue
+		}
+		for _, p := range allPaths {
+			if s := FindStoreAtRoot(p); s != nil {
+				stores = append(stores, s)
+			}
+		}
+	}
+	return stores
 }
 
 func docrootToStore(docroot string, pl PlatformInterface) *Store {
