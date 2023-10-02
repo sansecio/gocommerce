@@ -13,13 +13,21 @@ var commonDocRoots = []string{
 	"$HOME/www",
 	"$HOME/httpdocs",
 	"$HOME/master/Magento1Website",
-	"/app/$USER",
+	"$HOME/current",
+	"$HOME/magento2",
+	"/app/$USER", // adobe commerce
 	"$HOME/var/$SITE_NAME/logs",
 	"/var/www/html",
 	"$HOME/html",                       // jetrails
 	"/home/jetrails/*/html",            // jetrails
 	"$HOME/applications/*/public_html", // cloudways
-	"$PWD",                             // convenient when manually searching for current dr
+	"/data/web/public",                 // hypernode
+	"/home/cloudpanel/htdocs/*/current",
+	"/code",
+	"/domains/*/http",
+	"$HOME/domains/*/public_html",
+
+	"$PWD", // convenient when manually searching for current dr
 }
 
 func (s *Store) ConfigPath() string {
