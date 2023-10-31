@@ -7,7 +7,9 @@ import (
 )
 
 var commonDocRoots = []string{
+	"$PWD", // convenient when manually searching for current dir
 	"$DOCROOT",
+	"$HOME/public_html/deployments/current",
 	"$HOME/public_html/current",
 	"$HOME/public_html",
 	"$HOME/www",
@@ -15,20 +17,18 @@ var commonDocRoots = []string{
 	"$HOME/master/Magento1Website",
 	"$HOME/current",
 	"$HOME/magento2",
-	"/app/$USER",                        // adobe commerce
+	"/app/$USER", // adobe commerce
 	"$HOME/var/$SITE_NAME/logs",
 	"/var/www/html",
-	"$HOME/html",                        // jetrails
-	"/home/jetrails/*/html",             // jetrails
-	"$HOME/applications/*/public_html",  // cloudways
-	"/data/web/public",                  // hypernode
+	"$HOME/html",                       // jetrails
+	"/home/jetrails/*/html",            // jetrails
+	"$HOME/applications/*/public_html", // cloudways
+	"/data/web/public",                 // hypernode
 	"/home/cloudpanel/htdocs/*/current",
 	"/code",
-	"/domains/*/http",                   // sonassi
+	"/domains/*/http", // sonassi
 	"/srv/*",
 	"$HOME/domains/*/public_html",
-
-	"$PWD", // convenient when manually searching for current dir
 }
 
 func (s *Store) ConfigPath() string {
