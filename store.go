@@ -29,6 +29,7 @@ var commonDocRoots = []string{
 	"/domains/*/http", // sonassi
 	"/srv/*",
 	"$HOME/domains/*/public_html",
+	"/var/www/*/public_html",
 }
 
 func (s *Store) ConfigPath() string {
