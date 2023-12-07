@@ -29,6 +29,7 @@ var commonDocRoots = []string{
 	"/domains/*/http", // sonassi
 	"/srv/*",
 	"$HOME/domains/*/public_html",
+	"/var/www/*",
 	"/var/www/*/public_html",
 }
 
