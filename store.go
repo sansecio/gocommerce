@@ -25,6 +25,7 @@ var commonDocRoots = []string{
 	"$HOME/applications/*/public_html", // cloudways
 	"/data/web/public",                 // hypernode
 	"/home/cloudpanel/htdocs/*/current",
+	"/home/cloudpanel/htdocs/*",
 	"/code",
 	"/domains/*/http", // sonassi
 	"/srv/*",
