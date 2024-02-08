@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+type Shopware6 struct {
+	basePlatform
+}
+
 const (
 	// DATABASE_URL=mysql://db-user-1:rhPb5xC2242444mFZDB@localhost:3306/db-1
 	DBURL = `(?m)^\s*DATABASE_URL\s*="?\s*mysql://(.+?):(.+?)@(.+?):(\d+)/(.+?)"?$`

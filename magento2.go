@@ -13,6 +13,11 @@ import (
 )
 
 type (
+	Magento2 struct {
+		basePlatform
+		Magerun string
+	}
+
 	composerRoot struct {
 		Name    string            `json:"name"`
 		Version string            `json:"version"`
