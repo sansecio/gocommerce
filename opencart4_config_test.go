@@ -19,3 +19,10 @@ func TestOpenCartURL(t *testing.T) {
 	assert.NotEmpty(t, urls)
 	assert.Equal(t, "http://sansec.io/", urls[0])
 }
+
+func TestOpenCartVersion(t *testing.T) {
+	oc4 := OpenCart4{}
+	ver, err := oc4.Version(fixtureBase + "opencart4")
+	assert.NoError(t, err)
+	assert.Equal(t, "4.0.2.3", ver)
+}
