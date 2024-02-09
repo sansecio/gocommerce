@@ -2,6 +2,10 @@ package gocommerce
 
 import "github.com/sansecio/gocommerce/phpcfg"
 
+type Prestashop7 struct {
+	basePlatform
+}
+
 func (p *Prestashop7) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	cm, err := phpcfg.ParsePath(cfgPath)
 	if err != nil {

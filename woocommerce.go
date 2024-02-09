@@ -5,6 +5,10 @@ import (
 	"regexp"
 )
 
+type WooCommerce struct {
+	basePlatform
+}
+
 var wpLookupRgx = map[string]string{
 	"user":   `define\(\s*['"]DB_USER['"]\s*,\s*['"](\S+?)['"]\s*\);`,
 	"pass":   `define\(\s*['"]DB_PASSWORD['"]\s*,\s*['"]([^']{0,64})['"]\s*\);`,

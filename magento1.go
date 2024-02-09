@@ -10,6 +10,11 @@ import (
 	"gopkg.in/xmlpath.v2"
 )
 
+type Magento1 struct {
+	basePlatform
+	Magerun string
+}
+
 const (
 	versionRegex = "(?m)public static function getVersionInfo[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',"
 )
