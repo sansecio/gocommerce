@@ -13,8 +13,8 @@ type OpenCart4 struct {
 }
 
 var (
-	ocVersionRgx = regexp.MustCompile(`define\('HTTP_SERVER',\s?'([^']+)'\);`)
-
+	ocURLRgx    = regexp.MustCompile(`define\('HTTP_SERVER',\s?'([^']+)'\);`)
+	ocVerRgx    = regexp.MustCompile(`define\('VERSION',\s?'([^']+)'\);`)
 	ocLookupRgx = map[string]string{
 		"host":   `define\('DB_HOSTNAME\',\s?'([^']+)'\);`,
 		"user":   `define\('DB_USERNAME\',\s?'([^']+)'\);`,
@@ -58,16 +58,31 @@ func (oc4 *OpenCart4) ParseConfig(cfgPath string) (*StoreConfig, error) {
 }
 
 func (oc4 *OpenCart4) BaseURLs(docroot string) ([]string, error) {
-	configPath := filepath.Join(docroot, "config.php")
-	cfg, err := os.ReadFile(configPath)
+	cfgPath := filepath.Join(docroot, "config.php")
+	cfg, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return nil, err
 	}
 
-	match := ocVersionRgx.FindSubmatch(cfg)
+	match := ocURLRgx.FindSubmatch(cfg)
 	if len(match) < 2 {
 		return nil, errors.New("base url not found in config")
 	}
 
 	return []string{string(match[1])}, nil
+}
+
+func (oc4 *OpenCart4) Version(docroot string) (string, error) {
+	cfgPath := filepath.Join(docroot, "admin", "index.php")
+	cfg, err := os.ReadFile(cfgPath)
+	if err != nil {
+		return "", err
+	}
+
+	match := ocVerRgx.FindSubmatch(cfg)
+	if len(match) < 2 {
+		return "", errors.New("version not found in config")
+	}
+
+	return string(match[1]), nil
 }

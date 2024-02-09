@@ -18,6 +18,10 @@ func main() {
 		log.Fatalf("Unable to find store at %s\n", os.Args[1])
 	}
 
-	fmt.Printf("Found %s at %s\n", store.Platform.Name(), os.Args[1])
+	ver, err := store.Platform.Version(os.Args[1])
+	if err != nil {
+		ver = "unknown"
+	}
+	fmt.Printf("Found %s (ver: %s) at %s\n", store.Platform.Name(), ver, os.Args[1])
 	fmt.Printf("DBC: %+v\n", store.Config.DB)
 }
