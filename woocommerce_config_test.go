@@ -4,8 +4,6 @@ import (
 	"testing"
 )
 
-var woocommerce = WooCommerce{}
-
 func TestWooCommerceConfigToDSN(t *testing.T) {
 	tests := map[string]DBConfig{
 		"wp-config.php": {
@@ -58,9 +56,10 @@ func TestWooCommerceConfigToDSN(t *testing.T) {
 		},
 	}
 
+	wc := WooCommerce{}
 	for cnf, want := range tests {
 		path := fixtureBase + "/wordpress/configs/" + cnf
-		got := dbConfigFromSource(t, path, &woocommerce)
+		got := dbConfigFromSource(t, path, &wc)
 
 		if got.DSN() != want.DSN() {
 			t.Errorf("%v: ConfigToDSN() = %v, want %v", cnf, got, want)

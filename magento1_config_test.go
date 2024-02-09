@@ -6,10 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var magento1 = Magento1{}
-
 func TestParseConfigSimpleMagento1DB(t *testing.T) {
-	dbc := dbConfigFromSource(t, fixtureBase+"/magento1/app/etc/local.xml", &magento1)
+	m1 := Magento1{}
+	dbc := dbConfigFromSource(t, fixtureBase+"/magento1/app/etc/local.xml", &m1)
 
 	assert.Equal(t, "localhost", dbc.Host)
 	assert.Equal(t, "mag1", dbc.Name)
@@ -20,13 +19,15 @@ func TestParseConfigSimpleMagento1DB(t *testing.T) {
 }
 
 func TestParseConfigHostWithPort(t *testing.T) {
-	dbc := dbConfigFromSource(t, fixtureBase+"/magento1/configs/app/etc/local.xml.hostport", &magento1)
+	m1 := Magento1{}
+	dbc := dbConfigFromSource(t, fixtureBase+"/magento1/configs/app/etc/local.xml.hostport", &m1)
 	assert.Equal(t, "localhost", dbc.Host)
 	assert.Equal(t, 3307, dbc.Port)
 }
 
 func TestParseEmptyPassword(t *testing.T) {
-	dbc := dbConfigFromSource(t, fixtureBase+"/magento1/configs/app/etc/local.xml.nopass", &magento1)
+	m1 := Magento1{}
+	dbc := dbConfigFromSource(t, fixtureBase+"/magento1/configs/app/etc/local.xml.nopass", &m1)
 	assert.Equal(t, "jeroen:@tcp(db:3306)/jeroen_schweigmann?allowOldPasswords=true", dbc.DSN())
 }
 

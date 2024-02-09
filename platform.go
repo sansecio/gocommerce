@@ -88,6 +88,13 @@ var AllPlatforms = []PlatformInterface{
 			"wp-config.php",
 		},
 	},
+	&OpenCart4{
+		basePlatform{
+			"Prestashop 4",
+			"config.php",
+			"system/engine/config.php",
+		},
+	},
 }
 
 func (b *basePlatform) Name() string {
