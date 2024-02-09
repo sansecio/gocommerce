@@ -33,32 +33,6 @@ type (
 		uniquePath string // A relative path that is sufficiently unique to identify a particular platform
 	}
 
-	Magento1 struct {
-		basePlatform
-		Magerun string
-	}
-
-	Magento2 struct {
-		basePlatform
-		Magerun string
-	}
-
-	Shopware5 struct {
-		basePlatform
-	}
-
-	Shopware6 struct {
-		basePlatform
-	}
-
-	Prestashop7 struct {
-		basePlatform
-	}
-
-	WooCommerce struct {
-		basePlatform
-	}
-
 	PlatformInterface interface {
 		Name() string
 		ParseConfig(cfgPath string) (*StoreConfig, error)
@@ -69,54 +43,52 @@ type (
 	}
 )
 
-var (
-	AllPlatforms = []PlatformInterface{
-		&Magento1{
-			basePlatform{
-				"Magento 1",
-				"app/etc/local.xml",
-				"app/etc/local.xml",
-			},
-			"n98-magerun",
+var AllPlatforms = []PlatformInterface{
+	&Magento1{
+		basePlatform{
+			"Magento 1",
+			"app/etc/local.xml",
+			"app/etc/local.xml",
 		},
-		&Magento2{
-			basePlatform{
-				"Magento 2",
-				"app/etc/env.php",
-				"app/etc/env.php",
-			},
-			"n98-magerun2",
+		"n98-magerun",
+	},
+	&Magento2{
+		basePlatform{
+			"Magento 2",
+			"app/etc/env.php",
+			"app/etc/env.php",
 		},
-		&Shopware5{
-			basePlatform{
-				"Shopware 5",
-				"config.php",
-				"engine/Shopware/Application.php",
-			},
+		"n98-magerun2",
+	},
+	&Shopware5{
+		basePlatform{
+			"Shopware 5",
+			"config.php",
+			"engine/Shopware/Application.php",
 		},
-		&Shopware6{
-			basePlatform{
-				"Shopware 6",
-				".env",
-				"vendor/shopware/core/Framework/ShopwareException.php",
-			},
+	},
+	&Shopware6{
+		basePlatform{
+			"Shopware 6",
+			".env",
+			"vendor/shopware/core/Framework/ShopwareException.php",
 		},
-		&Prestashop7{
-			basePlatform{
-				"Prestashop 7 ",
-				"app/config/parameters.php",
-				"app/config/parameters.php",
-			},
+	},
+	&Prestashop7{
+		basePlatform{
+			"Prestashop 7",
+			"app/config/parameters.php",
+			"app/config/parameters.php",
 		},
-		&WooCommerce{
-			basePlatform{
-				"WooCommerce",
-				"wp-config.php",
-				"wp-config.php",
-			},
+	},
+	&WooCommerce{
+		basePlatform{
+			"WooCommerce",
+			"wp-config.php",
+			"wp-config.php",
 		},
-	}
-)
+	},
+}
 
 func (b *basePlatform) Name() string {
 	return b.name

@@ -71,5 +71,4 @@ func TestWooCommerceConfigToDSN(t *testing.T) {
 		}
 
 	}
-
 }

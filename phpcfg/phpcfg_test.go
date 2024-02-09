@@ -1,7 +1,9 @@
 package phpcfg
 
-import "testing"
-import "github.com/google/go-cmp/cmp"
+import (
+	"testing"
+	"github.com/google/go-cmp/cmp"
+)
 
 func TestParseShortArray(t *testing.T) {
 	src := `
