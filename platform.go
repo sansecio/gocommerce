@@ -90,7 +90,7 @@ var AllPlatforms = []PlatformInterface{
 	},
 	&OpenCart4{
 		basePlatform{
-			"Prestashop 4",
+			"OpenCart 4",
 			"config.php",
 			"system/engine/config.php",
 		},
