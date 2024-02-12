@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"regexp"
 )
 
 type (
@@ -150,4 +151,14 @@ func (c *DBConfig) DSN() string {
 		network,
 		address,
 		c.Name)
+}
+
+func (c *DBConfig) SafePrefix() (string, error) {
+	// prefix can only contain alphanum and underscores
+	re := regexp.MustCompile(`[^a-zA-Z0-9_]`)
+    if len(c.Prefix) > 0 && re.MatchString(c.Prefix) {
+		return "", errors.New("invalid database prefix")
+	}
+
+	return c.Prefix, nil
 }
