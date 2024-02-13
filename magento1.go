@@ -75,7 +75,11 @@ func (m1 *Magento1) BaseURLs(docroot string) ([]string, error) {
 		return nil, err
 	}
 
-	rows, err := db.Query(`select distinct value from core_config_data where path like 'web/%secure/base_url'`)
+	prefix, err := cfg.DB.SafePrefix()
+	if err != nil {
+		return nil, err
+	}
+	rows, err := db.Query(`select distinct value from ` + prefix + `core_config_data where path like 'web/%secure/base_url'`)
 	if err != nil {
 		return nil, err
 	}
