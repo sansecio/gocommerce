@@ -17,7 +17,7 @@ var commonDocRoots = []string{
 	"$HOME/master/Magento1Website",
 	"$HOME/current",
 	"$HOME/magento2",
-	"/app/$USER", // adobe commerce
+	"/app/$USER",                       // adobe commerce
 	"$HOME/var/$SITE_NAME/logs",
 	"/var/www/html",
 	"$HOME/html",                       // jetrails
@@ -27,12 +27,13 @@ var commonDocRoots = []string{
 	"/home/cloudpanel/htdocs/*/current",
 	"/home/cloudpanel/htdocs/*",
 	"/code",
-	"/domains/*/http", // sonassi
+	"/domains/*/http",                  // sonassi
 	"/srv/*",
 	"$HOME/domains/*/public_html",
 	"/var/www/*",
 	"/var/www/*/public_html",
-	"/vhosts/*/httpdocs", // plesk
+	"/vhosts/*/httpdocs",               // plesk
+	"$HOME/*.*/",                       // generic domain pattern
 }
 
 func (s *Store) ConfigPath() string {
