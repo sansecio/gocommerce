@@ -3,8 +3,8 @@ package gocommerce
 import (
 	"errors"
 	"fmt"
-	"strings"
 	"regexp"
+	"strings"
 )
 
 type (
@@ -156,7 +156,7 @@ func (c *DBConfig) DSN() string {
 func (c *DBConfig) SafePrefix() (string, error) {
 	// prefix can only contain alphanum and underscores
 	re := regexp.MustCompile(`[^a-zA-Z0-9_]`)
-    if len(c.Prefix) > 0 && re.MatchString(c.Prefix) {
+	if len(c.Prefix) > 0 && re.MatchString(c.Prefix) {
 		return "", fmt.Errorf("invalid database prefix: %s", c.Prefix)
 	}
 

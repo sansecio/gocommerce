@@ -33,6 +33,7 @@ var commonDocRoots = []string{
 	"/var/www/*",
 	"/var/www/*/public_html",
 	"/vhosts/*/httpdocs", // plesk
+	"$HOME/*.*",          // generic domain pattern
 }
 
 func (s *Store) ConfigPath() string {

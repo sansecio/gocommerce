@@ -1,8 +1,8 @@
 package phpcfg
 
 import (
-	"testing"
 	"github.com/google/go-cmp/cmp"
+	"testing"
 )
 
 func TestParseShortArray(t *testing.T) {
