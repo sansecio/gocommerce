@@ -32,6 +32,7 @@ var commonDocRoots = []string{
 	"$HOME/domains/*/public_html",
 	"/var/www/*",
 	"/var/www/*/public_html",
+	"/var/www/vhosts/*/htdocs",
 	"/vhosts/*/httpdocs", // plesk
 	"$HOME/*.*",          // generic domain pattern
 }
