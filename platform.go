@@ -160,7 +160,7 @@ func (c *DBConfig) DSN() string {
 }
 
 func (c *DBConfig) SafePrefix() (string, error) {
-	if !validTableNameRe.MatchString(c.Prefix) {
+	if len(c.Prefix) > 0 && !validTableNameRe.MatchString(c.Prefix) {
 		return "", fmt.Errorf("invalid database prefix: %s", c.Prefix)
 	}
 
