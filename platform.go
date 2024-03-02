@@ -44,59 +44,65 @@ type (
 	}
 )
 
-var AllPlatforms = []PlatformInterface{
-	&Magento1{
-		basePlatform{
-			"Magento 1",
-			"app/etc/local.xml",
-			"app/etc/local.xml",
+var (
+	// Table names commonly contain only alphanum and underscores
+	// https://dev.mysql.com/doc/refman/en/identifiers.html
+	validTableNameRe *regexp.Regexp = regexp.MustCompile(`^[a-zA-Z0-9_]+$`)
+
+	AllPlatforms = []PlatformInterface{
+		&Magento1{
+			basePlatform{
+				"Magento 1",
+				"app/etc/local.xml",
+				"app/etc/local.xml",
+			},
+			"n98-magerun",
 		},
-		"n98-magerun",
-	},
-	&Magento2{
-		basePlatform{
-			"Magento 2",
-			"app/etc/env.php",
-			"app/etc/env.php",
+		&Magento2{
+			basePlatform{
+				"Magento 2",
+				"app/etc/env.php",
+				"app/etc/env.php",
+			},
+			"n98-magerun2",
 		},
-		"n98-magerun2",
-	},
-	&Shopware5{
-		basePlatform{
-			"Shopware 5",
-			"config.php",
-			"engine/Shopware/Application.php",
+		&Shopware5{
+			basePlatform{
+				"Shopware 5",
+				"config.php",
+				"engine/Shopware/Application.php",
+			},
 		},
-	},
-	&Shopware6{
-		basePlatform{
-			"Shopware 6",
-			".env",
-			"vendor/shopware/core/Framework/ShopwareException.php",
+		&Shopware6{
+			basePlatform{
+				"Shopware 6",
+				".env",
+				"vendor/shopware/core/Framework/ShopwareException.php",
+			},
 		},
-	},
-	&Prestashop7{
-		basePlatform{
-			"Prestashop 7",
-			"app/config/parameters.php",
-			"app/config/parameters.php",
+		&Prestashop7{
+			basePlatform{
+				"Prestashop 7",
+				"app/config/parameters.php",
+				"app/config/parameters.php",
+			},
 		},
-	},
-	&WooCommerce{
-		basePlatform{
-			"WooCommerce",
-			"wp-config.php",
-			"wp-config.php",
+		&WooCommerce{
+			basePlatform{
+				"WooCommerce",
+				"wp-config.php",
+				"wp-config.php",
+			},
 		},
-	},
-	&OpenCart4{
-		basePlatform{
-			"OpenCart 4",
-			"config.php",
-			"system/engine/config.php",
+		&OpenCart4{
+			basePlatform{
+				"OpenCart 4",
+				"config.php",
+				"system/engine/config.php",
+			},
 		},
-	},
-}
+	}
+)
 
 func (b *basePlatform) Name() string {
 	return b.name
@@ -154,9 +160,7 @@ func (c *DBConfig) DSN() string {
 }
 
 func (c *DBConfig) SafePrefix() (string, error) {
-	// prefix can only contain alphanum and underscores
-	re := regexp.MustCompile(`[^a-zA-Z0-9_]`)
-	if len(c.Prefix) > 0 && re.MatchString(c.Prefix) {
+	if !validTableNameRe.MatchString(c.Prefix) {
 		return "", fmt.Errorf("invalid database prefix: %s", c.Prefix)
 	}
 
