@@ -33,8 +33,9 @@ var commonDocRoots = []string{
 	"/var/www/*",
 	"/var/www/*/public_html",
 	"/var/www/vhosts/*/htdocs",
-	"/vhosts/*/httpdocs", // plesk
-	"$HOME/*.*",          // generic domain pattern
+	"/vhosts/*/httpdocs",   // plesk
+	"$HOME/public_html/..", // nexcess
+	"$HOME/??*.*",          // generic domain pattern
 }
 
 func (s *Store) ConfigPath() string {
@@ -75,6 +76,16 @@ func DiscoverStores() []*Store {
 	stores := []*Store{}
 	for _, dr := range commonDocRoots {
 		dr = os.ExpandEnv(dr)
+
+		// Following is required to support "$HOME/public_html/.." in possible store paths.
+		// There, public_html being a symlink to magento2/pub (Nexcess and others).
+		// Without this lookup, public_html/.. would get lexically parsed by filepath.Clean()
+		// ending up at the parent of public_html instead of magento2. --wdg
+		dr, err := filepath.EvalSymlinks(dr)
+		if err != nil { // eg some path component does not exist
+			continue
+		}
+
 		// extrapolate possible globs
 		allPaths, err := filepath.Glob(dr)
 		if err != nil {
