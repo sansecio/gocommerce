@@ -3,7 +3,7 @@ module github.com/sansecio/gocommerce
 go 1.20
 
 require (
-	github.com/go-sql-driver/mysql v1.5.0
+	github.com/go-sql-driver/mysql v1.5.0 // 20190901 last release is incompatible with older mysql servers
 	github.com/google/go-cmp v0.5.7
 	github.com/stretchr/testify v1.7.1
 	github.com/z7zmey/php-parser v0.7.2
