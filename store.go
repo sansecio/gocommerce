@@ -74,16 +74,18 @@ func FindStoreAtUniquePath(path string) *Store {
 // DiscoverStores searches several common docroot locations for stores
 func DiscoverStores() []*Store {
 	stores := []*Store{}
+	var err error
 	for _, dr := range commonDocRoots {
 		dr = os.ExpandEnv(dr)
-
 		// Following is required to support "$HOME/public_html/.." in possible store paths.
 		// There, public_html being a symlink to magento2/pub (Nexcess and others).
 		// Without this lookup, public_html/.. would get lexically parsed by filepath.Clean()
 		// ending up at the parent of public_html instead of magento2. --wdg
-		dr, err := filepath.EvalSymlinks(dr)
-		if err != nil { // eg some path component does not exist
-			continue
+		if strings.Contains(dr, "/..") && !strings.Contains(dr, "*") && !strings.Contains(dr, "?") {
+			dr, err = filepath.EvalSymlinks(dr)
+			if err != nil { // eg some path component does not exist
+				continue
+			}
 		}
 
 		// extrapolate possible globs
