@@ -17,6 +17,7 @@ var commonDocRoots = []string{
 	"$HOME/master/Magento1Website",
 	"$HOME/current",
 	"$HOME/magento2",
+	"/httpdocs",  // youwe
 	"/app/$USER", // adobe commerce
 	"$HOME/var/$SITE_NAME/logs",
 	"/var/www/html",
