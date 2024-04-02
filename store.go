@@ -34,9 +34,10 @@ var commonDocRoots = []string{
 	"/var/www/*",
 	"/var/www/*/public_html",
 	"/var/www/vhosts/*/htdocs",
-	"/vhosts/*/httpdocs",   // plesk
-	"$HOME/public_html/..", // nexcess
-	"$HOME/??*.*",          // generic domain pattern
+	"/vhosts/production/magento", // hypernode
+	"/vhosts/*/httpdocs",         // plesk
+	"$HOME/public_html/..",       // nexcess
+	"$HOME/??*.*",                // generic domain pattern
 }
 
 func (s *Store) ConfigPath() string {
