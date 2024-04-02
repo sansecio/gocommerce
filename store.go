@@ -34,9 +34,9 @@ var commonDocRoots = []string{
 	"/var/www/*",
 	"/var/www/*/public_html",
 	"/var/www/vhosts/*/htdocs",
-	"/vhosts/production/magento", // hypernode
 	"/vhosts/*/httpdocs",         // plesk
 	"$HOME/public_html/..",       // nexcess
+	"$HOME/public/..",            // hypernode
 	"$HOME/??*.*",                // generic domain pattern
 }
 
