@@ -37,6 +37,7 @@ var commonDocRoots = []string{
 	"/vhosts/*/httpdocs",         // plesk
 	"$HOME/public_html/..",       // nexcess
 	"$HOME/public/..",            // hypernode
+	"$HOME/public",               // hypernode, nimbus hosting
 	"$HOME/??*.*",                // generic domain pattern
 }
 
