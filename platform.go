@@ -96,6 +96,13 @@ var AllPlatforms = []PlatformInterface{
 			"system/engine/config.php",
 		},
 	},
+	&Bedrock{
+		basePlatform{
+			"Bedrock",
+			".env",
+			"web/app/mu-plugins/bedrock-autoloader.php",
+		},
+	},
 }
 
 func (b *basePlatform) Name() string {
