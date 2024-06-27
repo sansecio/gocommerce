@@ -75,6 +75,13 @@ var AllPlatforms = []PlatformInterface{
 			"vendor/shopware/core/Framework/ShopwareException.php",
 		},
 	},
+	&Prestashop6{
+		basePlatform{
+			"Prestashop 6",
+			"config/settings.inc.php",
+			"config/settings.inc.php",
+		},
+	},
 	&Prestashop7{
 		basePlatform{
 			"Prestashop 7",
