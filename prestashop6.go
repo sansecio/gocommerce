@@ -11,16 +11,13 @@ type Prestashop6 struct {
 	basePlatform
 }
 
-var (
-	p6VerRgx    = regexp.MustCompile(`define\('VERSION',\s?'([^']+)'\);`)
-	p6LookupRgx = map[string]string{
-		"host":   `define\('_DB_SERVER_',\s?'([^']+)'\);`,
-		"user":   `define\('_DB_USER_',\s?'([^']+)'\);`,
-		"pass":   `define\('_DB_PASSWD_',\s?'([^']+)'\);`,
-		"db":     `define\('_DB_NAME_\',\s?'([^']+)'\);`,
-		"prefix": `define\('_DB_PREFIX_\',\s?'([^']+)'\);`,
-	}
-)
+var p6LookupRgx = map[string]string{
+	"host":   `define\('_DB_SERVER_',\s?'([^']+)'\);`,
+	"user":   `define\('_DB_USER_',\s?'([^']+)'\);`,
+	"pass":   `define\('_DB_PASSWD_',\s?'([^']+)'\);`,
+	"db":     `define\('_DB_NAME_\',\s?'([^']+)'\);`,
+	"prefix": `define\('_DB_PREFIX_\',\s?'([^']+)'\);`,
+}
 
 func (p *Prestashop6) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	data, err := os.ReadFile(cfgPath)
