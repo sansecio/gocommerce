@@ -1,6 +1,6 @@
 module github.com/sansecio/gocommerce
 
-go 1.20
+go 1.22
 
 require (
 	github.com/go-sql-driver/mysql v1.5.0 // 20190901 last release is incompatible with older mysql servers
