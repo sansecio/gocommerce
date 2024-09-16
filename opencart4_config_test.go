@@ -14,7 +14,7 @@ func TestOpenCartConfig(t *testing.T) {
 
 func TestOpenCartURL(t *testing.T) {
 	oc4 := OpenCart4{}
-	urls, err := oc4.BaseURLs(fixtureBase + "opencart4")
+	urls, err := oc4.BaseURLs(fixtureBase + "opencart4", nil)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, urls)
 	assert.Equal(t, "http://sansec.io/", urls[0])

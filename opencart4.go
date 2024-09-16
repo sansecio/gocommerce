@@ -1,6 +1,7 @@
 package gocommerce
 
 import (
+	"context"
 	"errors"
 	"os"
 	"path/filepath"
@@ -57,7 +58,7 @@ func (oc4 *OpenCart4) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (oc4 *OpenCart4) BaseURLs(docroot string) ([]string, error) {
+func (oc4 *OpenCart4) BaseURLs(docroot string, ctx context.Context) ([]string, error) {
 	cfgPath := filepath.Join(docroot, "config.php")
 	cfg, err := os.ReadFile(cfgPath)
 	if err != nil {

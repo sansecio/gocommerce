@@ -62,8 +62,8 @@ func TestGetMagentoVersionWithoutSystemPackages(t *testing.T) {
 	assert.Equal(t, "2.4.2-p2", version)
 }
 
-func TestGetMagentoBaseURLsFromConfig(t *testing.T) {
-	baseURLs, err := m2store.BaseURLs(fixtureBase + "magento2")
+func TestGetMagentoBaseURLsFromConfigNilCtx(t *testing.T) {
+	baseURLs, err := m2store.BaseURLs(fixtureBase + "magento2", nil)
 	assert.Nil(t, err)
 	assert.ElementsMatch(t, []string{"https://sansec.io/", "https://api.sansec.io/"}, baseURLs)
 }
