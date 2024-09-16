@@ -1,8 +1,10 @@
 package gocommerce
 
 import (
+	"context"
 	"database/sql"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -29,7 +31,10 @@ func ConnectDB(cfg DBConfig) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = db.Ping()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = db.PingContext(ctx)
 	if err != nil {
 		return nil, err
 	}
