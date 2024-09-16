@@ -1,6 +1,7 @@
 package gocommerce
 
 import (
+	"context"
 	"database/sql"
 	"os"
 
@@ -13,7 +14,7 @@ var defaultSockets = []string{
 }
 
 // NB copy StoreConfig, as we may modify it
-func ConnectDB(cfg DBConfig) (*sql.DB, error) {
+func ConnectDB(ctx context.Context, cfg DBConfig) (*sql.DB, error) {
 	// Mimic libmysql behavior, where "localhost" is overridden with
 	// system specific unix socket.
 	if cfg.Host == "localhost" || cfg.Host == "" {
@@ -29,7 +30,11 @@ func ConnectDB(cfg DBConfig) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = db.Ping()
+
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	err = db.PingContext(ctx)
 	if err != nil {
 		return nil, err
 	}

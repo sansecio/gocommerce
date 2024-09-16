@@ -7,7 +7,7 @@ import (
 
 const fixtureBase = "fixture/"
 
-func dbConfigFromSource(t *testing.T, src string, pl PlatformInterface) *DBConfig {
+func dbConfigFromSource(_ *testing.T, src string, pl PlatformInterface) *DBConfig {
 	cfg, e := pl.ParseConfig(src)
 	if e != nil {
 		fmt.Println(e)

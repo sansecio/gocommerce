@@ -1,6 +1,7 @@
 package gocommerce
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"regexp"
@@ -38,7 +39,7 @@ type (
 		Name() string
 		ParseConfig(cfgPath string) (*StoreConfig, error)
 		Version(docroot string) (string, error)
-		BaseURLs(docroot string) ([]string, error)
+		BaseURLs(ctx context.Context, docroot string) ([]string, error)
 		ConfigPath() string
 		UniquePath() string
 	}
@@ -121,7 +122,7 @@ func (b *basePlatform) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	return nil, errors.New("not implemented")
 }
 
-func (b *basePlatform) BaseURLs(docroot string) ([]string, error) {
+func (b *basePlatform) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
 	return nil, errors.New("not implemented")
 }
 
