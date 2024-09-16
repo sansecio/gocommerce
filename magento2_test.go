@@ -1,6 +1,7 @@
 package gocommerce
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -63,7 +64,7 @@ func TestGetMagentoVersionWithoutSystemPackages(t *testing.T) {
 }
 
 func TestGetMagentoBaseURLsFromConfigNilCtx(t *testing.T) {
-	baseURLs, err := m2store.BaseURLs(nil, fixtureBase+"magento2")
+	baseURLs, err := m2store.BaseURLs(context.TODO(), fixtureBase+"magento2")
 	assert.Nil(t, err)
 	assert.ElementsMatch(t, []string{"https://sansec.io/", "https://api.sansec.io/"}, baseURLs)
 }
