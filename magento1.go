@@ -63,7 +63,7 @@ func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (m1 *Magento1) BaseURLs(docroot string, ctx context.Context) ([]string, error) {
+func (m1 *Magento1) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
 	cfgPath := filepath.Join(docroot, m1.ConfigPath())
 
 	cfg, err := m1.ParseConfig(cfgPath)
@@ -71,7 +71,7 @@ func (m1 *Magento1) BaseURLs(docroot string, ctx context.Context) ([]string, err
 		return nil, err
 	}
 
-	db, err := ConnectDB(*cfg.DB, ctx)
+	db, err := ConnectDB(ctx, *cfg.DB)
 	if err != nil {
 		return nil, err
 	}

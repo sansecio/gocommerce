@@ -70,10 +70,10 @@ func (m2 *Magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (m2 *Magento2) BaseURLs(docroot string, ctx context.Context) ([]string, error) {
+func (m2 *Magento2) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
 	cfgPath := filepath.Join(docroot, m2.ConfigPath())
 	urls := []string{}
-	if ud, err := m2.getBaseURLsFromDatabase(cfgPath, ctx); err == nil {
+	if ud, err := m2.getBaseURLsFromDatabase(ctx, cfgPath); err == nil {
 		urls = append(urls, ud...)
 	}
 	if uc, err := m2.getBaseURLsFromConfig(cfgPath); err == nil {
@@ -121,13 +121,13 @@ func (m2 *Magento2) getBaseURLsFromConfig(cfgPath string) ([]string, error) {
 	return nil, errors.New("base url(s) not found in config")
 }
 
-func (m2 *Magento2) getBaseURLsFromDatabase(cfgPath string, ctx context.Context) ([]string, error) {
+func (m2 *Magento2) getBaseURLsFromDatabase(ctx context.Context, cfgPath string) ([]string, error) {
 	cfg, err := m2.ParseConfig(cfgPath)
 	if err != nil {
 		return nil, err
 	}
 
-	db, err := ConnectDB(*cfg.DB, ctx)
+	db, err := ConnectDB(ctx, *cfg.DB)
 	if err != nil {
 		return nil, err
 	}
