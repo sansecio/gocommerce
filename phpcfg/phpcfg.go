@@ -43,9 +43,8 @@ func getReturnedArray(ret *stmt.Return) node.Node {
 func unquote(s string) string {
 	if s[0] == '\'' && s[len(s)-1] == '\'' {
 		return s[1 : len(s)-1]
-	} else {
-		return s
 	}
+	return s
 }
 
 // Converts the node into a string.
@@ -124,7 +123,7 @@ func parseArray(path []string, array node.Node, out map[string]string) error {
 			if item.Key != nil {
 				itemKey = nodeToString(item.Key)
 			} else {
-				ord += 1
+				ord++
 			}
 
 			itemPath := append(path, itemKey)
@@ -153,7 +152,7 @@ func Parse(src []byte) (map[string]string, error) {
 	p.Parse()
 	if len(p.GetErrors()) != 0 {
 		err0 := p.GetErrors()[0]
-		return nil, errors.New(fmt.Sprintf("PHP parse failed: %v", err0.Msg))
+		return nil, fmt.Errorf("PHP parse failed: %v", err0.Msg)
 	}
 
 	nodes := p.GetRootNode()

@@ -89,7 +89,7 @@ func (m2 *Magento2) Version(docroot string) (string, error) {
 		return version, nil
 	}
 
-	return getVersionFromJsonFile(docroot + "/composer.json")
+	return getVersionFromJSONFile(docroot + "/composer.json")
 }
 
 func urlIsPlaceholder(url string) bool {
@@ -156,7 +156,7 @@ func (m2 *Magento2) getBaseURLsFromDatabase(ctx context.Context, cfgPath string)
 	return nil, errors.New("base url(s) not found in database")
 }
 
-func getVersionFromJsonFile(jsonFile string) (string, error) {
+func getVersionFromJSONFile(jsonFile string) (string, error) {
 	jf, err := os.ReadFile(jsonFile)
 	if err != nil {
 		return "", err

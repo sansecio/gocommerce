@@ -118,15 +118,15 @@ func (b *basePlatform) UniquePath() string {
 	return b.uniquePath
 }
 
-func (b *basePlatform) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (b *basePlatform) ParseConfig(_ string) (*StoreConfig, error) {
 	return nil, errors.New("not implemented")
 }
 
-func (b *basePlatform) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
+func (b *basePlatform) BaseURLs(_ context.Context, _ string) ([]string, error) {
 	return nil, errors.New("not implemented")
 }
 
-func (b *basePlatform) Version(docroot string) (string, error) {
+func (b *basePlatform) Version(_ string) (string, error) {
 	return "", errors.New("not implemented")
 }
 

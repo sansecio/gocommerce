@@ -1,9 +1,9 @@
 package phpcfg
 
-import "io/ioutil"
+import "os"
 
 func ParsePath(path string) (map[string]string, error) {
-	body, err := ioutil.ReadFile(path)
+	body, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

@@ -31,8 +31,8 @@ func TestParseEmptyPassword(t *testing.T) {
 	assert.Equal(t, "jeroen:@tcp(db:3306)/jeroen_schweigmann?allowOldPasswords=true", dbc.DSN())
 }
 
-func TestGoogleCloudSocket(t *testing.T) {
-	// TODO: Why did we fail colons in host?
-	// dbc := dbConfigFromSource(t, fixtureBase+"/magento1/configs/app/etc/local.xml.google-cloud-socket", &magento1)
-	// assert.Equal(t, "app:M7PgT65EbGyIooZsxyV6Az7TgXDS5F@unix(/cloudsql/mystore:europe-west1:magento)/mag1?allowOldPasswords=true", dbc.DSN())
-}
+// func TestGoogleCloudSocket(t *testing.T) {
+// TODO: Why did we fail colons in host?
+// dbc := dbConfigFromSource(t, fixtureBase+"/magento1/configs/app/etc/local.xml.google-cloud-socket", &magento1)
+// assert.Equal(t, "app:M7PgT65EbGyIooZsxyV6Az7TgXDS5F@unix(/cloudsql/mystore:europe-west1:magento)/mag1?allowOldPasswords=true", dbc.DSN())
+// }

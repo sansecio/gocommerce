@@ -32,6 +32,7 @@ var commonDocRoots = []string{
 	"/srv/*",
 	"$HOME/domains/*/public_html",
 	"/var/www/*",
+	"/var/www/*/current",
 	"/var/www/*/public_html",
 	"/var/www/vhosts/*/htdocs",
 	"/vhosts/*/httpdocs",   // plesk
