@@ -1,7 +1,9 @@
 package gocommerce
 
 import (
+	"context"
 	"os"
+	"path/filepath"
 	"regexp"
 )
 
@@ -49,4 +51,27 @@ func (w *WooCommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
 			Port:   port,
 		},
 	}, nil
+}
+
+func (w *WooCommerce) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
+	cfg, err := w.ParseConfig(filepath.Join(docroot, w.ConfigPath()))
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := ConnectDB(ctx, *cfg.DB)
+	if err != nil {
+		return nil, err
+	}
+
+	prefix, err := cfg.DB.SafePrefix()
+	if err != nil {
+		return nil, err
+	}
+
+	var url string
+	if err = db.QueryRow(`select option_value from ` + prefix + `options where option_name = 'home'`).Scan(&url); err != nil {
+		return nil, err
+	}
+	return []string{url}, nil
 }

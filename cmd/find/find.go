@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -27,5 +28,12 @@ func main() {
 		}
 		fmt.Printf("- %s (ver: %s) at %s\n", store.Platform.Name(), ver, store.DocRoot)
 		fmt.Printf("DBC: %+v\n", store.Config.DB)
+
+		if urls, err := store.Platform.BaseURLs(context.Background(), store.DocRoot); err == nil {
+			fmt.Println("Base URLs:")
+			for _, url := range urls {
+				fmt.Printf("- %s\n", url)
+			}
+		}
 	}
 }
