@@ -2,6 +2,7 @@ package gocommerce
 
 import (
 	"context"
+	"errors"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -74,4 +75,17 @@ func (w *WooCommerce) BaseURLs(ctx context.Context, docroot string) ([]string, e
 		return nil, err
 	}
 	return []string{url}, nil
+}
+
+func (w *WooCommerce) Version(docroot string) (string, error) {
+	re := regexp.MustCompile(`\$wp_version\s*=\s*'([^']*)'`)
+	data, err := os.ReadFile(filepath.Join(docroot, "wp-includes", "version.php"))
+	if err != nil {
+		return "", err
+	}
+	match := re.FindStringSubmatch(string(data))
+	if len(match) < 2 {
+		return "", errors.New("no version found")
+	}
+	return match[1], nil
 }

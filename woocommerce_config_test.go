@@ -1,8 +1,18 @@
 package gocommerce
 
 import (
+	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
+
+func TestWooCommerceVersion(t *testing.T) {
+	wc := WooCommerce{}
+	ver, err := wc.Version(filepath.Join(fixtureBase, "wordpress"))
+	assert.NoError(t, err)
+	assert.Equal(t, "6.7.1", ver)
+}
 
 func TestWooCommerceConfigToDSN(t *testing.T) {
 	tests := map[string]DBConfig{
@@ -58,7 +68,7 @@ func TestWooCommerceConfigToDSN(t *testing.T) {
 
 	wc := WooCommerce{}
 	for cnf, want := range tests {
-		path := fixtureBase + "/wordpress/configs/" + cnf
+		path := filepath.Join(fixtureBase, "wordpress", "configs", cnf)
 		got := dbConfigFromSource(t, path, &wc)
 
 		if got.DSN() != want.DSN() {
