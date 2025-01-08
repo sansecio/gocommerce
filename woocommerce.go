@@ -78,7 +78,7 @@ func (w *WooCommerce) BaseURLs(ctx context.Context, docroot string) ([]string, e
 }
 
 func (w *WooCommerce) Version(docroot string) (string, error) {
-	re := regexp.MustCompile(`\$wp_version\s*=\s*'([^']*)'`)
+	re := regexp.MustCompile(`\$wp_version\s*=\s*'([^']+)';`)
 	data, err := os.ReadFile(filepath.Join(docroot, "wp-includes", "version.php"))
 	if err != nil {
 		return "", err
