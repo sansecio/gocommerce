@@ -1,7 +1,10 @@
 package gocommerce
 
 import (
+	"context"
+	"errors"
 	"os"
+	"path/filepath"
 	"regexp"
 )
 
@@ -49,4 +52,40 @@ func (w *WooCommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
 			Port:   port,
 		},
 	}, nil
+}
+
+func (w *WooCommerce) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
+	cfg, err := w.ParseConfig(filepath.Join(docroot, w.ConfigPath()))
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := ConnectDB(ctx, *cfg.DB)
+	if err != nil {
+		return nil, err
+	}
+
+	prefix, err := cfg.DB.SafePrefix()
+	if err != nil {
+		return nil, err
+	}
+
+	var url string
+	if err = db.QueryRow(`select option_value from ` + prefix + `options where option_name = 'home'`).Scan(&url); err != nil {
+		return nil, err
+	}
+	return []string{url}, nil
+}
+
+func (w *WooCommerce) Version(docroot string) (string, error) {
+	re := regexp.MustCompile(`\$wp_version\s*=\s*'([^']+)';`)
+	data, err := os.ReadFile(filepath.Join(docroot, "wp-includes", "version.php"))
+	if err != nil {
+		return "", err
+	}
+	match := re.FindStringSubmatch(string(data))
+	if len(match) < 2 {
+		return "", errors.New("no version found")
+	}
+	return match[1], nil
 }
