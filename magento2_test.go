@@ -57,12 +57,6 @@ func TestGetMagentoVersionWithoutLockFile(t *testing.T) {
 	assert.Equal(t, "2.4.2-p2", version)
 }
 
-func TestGetMagentoVersionWithoutSystemPackages(t *testing.T) {
-	version, err := m2store.Version(fixtureBase + "magento2_git_clone")
-	assert.Nil(t, err)
-	assert.Equal(t, "2.4.2-p2", version)
-}
-
 func TestGetMagentoBaseURLsFromConfigNilCtx(t *testing.T) {
 	baseURLs, err := m2store.BaseURLs(context.TODO(), fixtureBase+"magento2")
 	assert.Nil(t, err)

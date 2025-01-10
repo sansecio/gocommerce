@@ -26,14 +26,17 @@ func main() {
 		if err != nil {
 			ver = "unknown"
 		}
-		fmt.Printf("- %s (ver: %s) at %s\n", store.Platform.Name(), ver, store.DocRoot)
-		fmt.Printf("DBC: %+v\n", store.Config.DB)
+		fmt.Printf("%s (ver: %s) at %s\n", store.Platform.Name(), ver, store.DocRoot)
+		if store.Config != nil && store.Config.DB != nil {
+			fmt.Printf("DBC: %+v\n", store.Config.DB)
+		}
 
-		if urls, err := store.Platform.BaseURLs(context.Background(), store.DocRoot); err == nil {
+		if urls, err := store.Platform.BaseURLs(context.Background(), store.DocRoot); err == nil && len(urls) > 0 {
 			fmt.Println("Base URLs:")
 			for _, url := range urls {
 				fmt.Printf("- %s\n", url)
 			}
 		}
+		fmt.Println()
 	}
 }

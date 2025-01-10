@@ -3,6 +3,7 @@ package gocommerce
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 )
 
@@ -75,10 +76,9 @@ func FindStoreAtUniquePath(path string) *Store {
 	return nil
 }
 
-// DiscoverStores searches several common docroot locations for stores
-func DiscoverStores() []*Store {
-	stores := []*Store{}
+func findDocRoots() []string {
 	var err error
+	var roots []string
 	for _, dr := range commonDocRoots {
 		dr = os.ExpandEnv(dr)
 		// Following is required to support "$HOME/public_html/.." in possible store paths.
@@ -97,10 +97,18 @@ func DiscoverStores() []*Store {
 		if err != nil {
 			continue
 		}
-		for _, p := range allPaths {
-			if s := FindStoreAtRoot(p); s != nil {
-				stores = append(stores, s)
-			}
+		roots = append(roots, allPaths...)
+	}
+	slices.Sort(roots)
+	return slices.Compact(roots)
+}
+
+// DiscoverStores searches several common docroot locations for stores
+func DiscoverStores() []*Store {
+	stores := []*Store{}
+	for _, p := range findDocRoots() {
+		if s := FindStoreAtRoot(p); s != nil {
+			stores = append(stores, s)
 		}
 	}
 	return stores
