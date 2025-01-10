@@ -35,6 +35,6 @@ func main() {
 				fmt.Printf("- %s\n", url)
 			}
 		}
-		fmt.Print("\n")
+		fmt.Println()
 	}
 }
