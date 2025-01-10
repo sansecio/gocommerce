@@ -30,6 +30,15 @@ func TestDiscoverStores(t *testing.T) {
 	assert.Contains(t, stores[1].DocRoot, "discovery/sansec.store")
 }
 
+func TestDiscoverSymlinkedStore(t *testing.T) {
+	os.Setenv("HOME", fixtureBase+"/discovery/symlink")
+	stores := DiscoverStores()
+
+	assert.Len(t, stores, 1)
+	assert.Equal(t, "Magento 2", stores[0].Platform.Name())
+	assert.Contains(t, stores[0].DocRoot, "discovery/sansec.store")
+}
+
 func TestDiscoverStoresEmpty(t *testing.T) {
 	oldHome := os.Getenv("HOME")
 	defer os.Setenv("HOME", oldHome)
