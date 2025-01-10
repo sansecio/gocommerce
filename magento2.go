@@ -2,10 +2,8 @@ package gocommerce
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"path/filepath"
 	"regexp"
 	"slices"
@@ -20,20 +18,9 @@ type (
 		basePlatform
 		Magerun string
 	}
-
-	composerRoot struct {
-		Name    string            `json:"name"`
-		Version string            `json:"version"`
-		Require map[string]string `json:"require"`
-	}
-
-	composerPackages struct {
-		Packages []struct {
-			Name    string `json:"name"`
-			Version string `json:"version"`
-		} `json:"packages"`
-	}
 )
+
+var m2ComposerRgx = regexp.MustCompile(`magento\/product-.*?-edition`)
 
 func (m2 *Magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	cm, err := phpcfg.ParsePath(cfgPath)
@@ -84,12 +71,7 @@ func (m2 *Magento2) BaseURLs(ctx context.Context, docroot string) ([]string, err
 }
 
 func (m2 *Magento2) Version(docroot string) (string, error) {
-	version, err := getVersionFromLockFile(docroot + "/composer.lock")
-	if err == nil {
-		return version, nil
-	}
-
-	return getVersionFromJSONFile(docroot + "/composer.json")
+	return getVersionFromComposer(docroot, m2ComposerRgx)
 }
 
 func urlIsPlaceholder(url string) bool {
@@ -154,62 +136,4 @@ func (m2 *Magento2) getBaseURLsFromDatabase(ctx context.Context, cfgPath string)
 	}
 
 	return nil, errors.New("base url(s) not found in database")
-}
-
-func getVersionFromJSONFile(jsonFile string) (string, error) {
-	jf, err := os.ReadFile(jsonFile)
-	if err != nil {
-		return "", err
-	}
-
-	cr := composerRoot{}
-	err = json.Unmarshal(jf, &cr)
-	if err != nil {
-		return "", err
-	}
-
-	// First check if we can find a require on a system package.
-	for p, v := range cr.Require {
-		if isSystemPackage(p) {
-			return v, nil
-		}
-	}
-
-	// Then check if we are a git clone.
-	if isRootPackage(cr.Name) {
-		return cr.Version, nil
-	}
-
-	return "", errors.New("unable to determine version from composer.json")
-}
-
-func getVersionFromLockFile(lockFile string) (string, error) {
-	lf, err := os.ReadFile(lockFile)
-	if err != nil {
-		return "", err
-	}
-
-	cp := composerPackages{}
-	err = json.Unmarshal(lf, &cp)
-	if err != nil {
-		return "", err
-	}
-
-	for _, p := range cp.Packages {
-		if isSystemPackage(p.Name) {
-			return p.Version, nil
-		}
-	}
-
-	return "", errors.New("unable to determine version from composer.lock")
-}
-
-func isRootPackage(packageName string) bool {
-	match, _ := regexp.MatchString(`magento\/magento2...?`, packageName)
-	return match
-}
-
-func isSystemPackage(packageName string) bool {
-	match, _ := regexp.MatchString(`magento\/product-.*?-edition`, packageName)
-	return match
 }
