@@ -1,6 +1,10 @@
 package gocommerce
 
-import "github.com/sansecio/gocommerce/phpcfg"
+import (
+	"strconv"
+
+	"github.com/sansecio/gocommerce/phpcfg"
+)
 
 type Prestashop7 struct {
 	basePlatform
@@ -12,7 +16,12 @@ func (p *Prestashop7) ParseConfig(cfgPath string) (*StoreConfig, error) {
 		return nil, err
 	}
 
-	port := 3306 // root.parameters.database_port
+	port := 3306
+	if dbPort := cm["root.parameters.database_port"]; dbPort != "" {
+		if pi, err := strconv.Atoi(dbPort); err == nil {
+			port = pi
+		}
+	}
 
 	return &StoreConfig{
 		DB: &DBConfig{
