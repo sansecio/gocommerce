@@ -3,7 +3,6 @@ package gocommerce
 import (
 	"os"
 	"path/filepath"
-	"slices"
 	"strings"
 )
 
@@ -99,8 +98,18 @@ func findDocRoots() []string {
 		}
 		roots = append(roots, allPaths...)
 	}
-	slices.Sort(roots)
-	return slices.Compact(roots)
+
+	// deduplicate while preserving order (first occurrence wins)
+	// this ensures $PWD, $DOCROOT and friends take priority
+	seen := make(map[string]bool)
+	result := []string{}
+	for _, r := range roots {
+		if !seen[r] {
+			seen[r] = true
+			result = append(result, r)
+		}
+	}
+	return result
 }
 
 // DiscoverStores searches several common docroot locations for stores
