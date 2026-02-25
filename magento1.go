@@ -20,49 +20,31 @@ const (
 )
 
 type m1Config struct {
-	XMLName xml.Name       `xml:"config"`
-	Global  m1ConfigGlobal `xml:"global"`
-	Admin   m1ConfigAdmin  `xml:"admin"`
-}
-
-type m1ConfigGlobal struct {
-	Resources m1ConfigResources `xml:"resources"`
-}
-
-type m1ConfigResources struct {
-	DB           m1ConfigDB           `xml:"db"`
-	DefaultSetup m1ConfigDefaultSetup `xml:"default_setup"`
-}
-
-type m1ConfigDB struct {
-	TablePrefix string `xml:"table_prefix"`
-}
-
-type m1ConfigDefaultSetup struct {
-	Connection m1ConfigConnection `xml:"connection"`
-}
-
-type m1ConfigConnection struct {
-	Host     string `xml:"host"`
-	Username string `xml:"username"`
-	Password string `xml:"password"`
-	DBName   string `xml:"dbname"`
-}
-
-type m1ConfigAdmin struct {
-	Routers m1ConfigRouters `xml:"routers"`
-}
-
-type m1ConfigRouters struct {
-	Adminhtml m1ConfigAdminhtml `xml:"adminhtml"`
-}
-
-type m1ConfigAdminhtml struct {
-	Args m1ConfigArgs `xml:"args"`
-}
-
-type m1ConfigArgs struct {
-	FrontName string `xml:"frontName"`
+	XMLName xml.Name `xml:"config"`
+	Global  struct {
+		Resources struct {
+			DB struct {
+				TablePrefix string `xml:"table_prefix"`
+			} `xml:"db"`
+			DefaultSetup struct {
+				Connection struct {
+					Host     string `xml:"host"`
+					Username string `xml:"username"`
+					Password string `xml:"password"`
+					DBName   string `xml:"dbname"`
+				} `xml:"connection"`
+			} `xml:"default_setup"`
+		} `xml:"resources"`
+	} `xml:"global"`
+	Admin struct {
+		Routers struct {
+			Adminhtml struct {
+				Args struct {
+					FrontName string `xml:"frontName"`
+				} `xml:"args"`
+			} `xml:"adminhtml"`
+		} `xml:"routers"`
+	} `xml:"admin"`
 }
 
 func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
