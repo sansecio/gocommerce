@@ -64,11 +64,9 @@ func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 		return nil, fmt.Errorf("XML parse error for %s", cfgPath)
 	}
 
-	host := conn.Host
-	port := 3306
-	if h, p, e := parseHostPort(host); p > 0 && e == nil {
-		port = p
-		host = h
+	host, port := conn.Host, 3306
+	if h, p, e := parseHostPort(conn.Host); p > 0 && e == nil {
+		host, port = h, p
 	}
 
 	return &StoreConfig{
