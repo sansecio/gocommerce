@@ -46,14 +46,6 @@ type (
 )
 
 var AllPlatforms = []PlatformInterface{
-	&Magento1{
-		basePlatform{
-			"Magento 1",
-			"app/etc/local.xml",
-			"app/etc/local.xml",
-		},
-		"n98-magerun",
-	},
 	&Magento2{
 		basePlatform{
 			"Magento 2",
@@ -62,12 +54,13 @@ var AllPlatforms = []PlatformInterface{
 		},
 		"n98-magerun2",
 	},
-	&Shopware5{
+	&Magento1{
 		basePlatform{
-			"Shopware 5",
-			"config.php",
-			"engine/Shopware/Application.php",
+			"Magento 1",
+			"app/etc/local.xml",
+			"app/etc/local.xml",
 		},
+		"n98-magerun",
 	},
 	&Shopware6{
 		basePlatform{
@@ -76,18 +69,25 @@ var AllPlatforms = []PlatformInterface{
 			"vendor/shopware/core/Framework/ShopwareException.php",
 		},
 	},
-	&Prestashop6{
+	&Shopware5{
 		basePlatform{
-			"Prestashop 6",
-			"config/settings.inc.php",
-			"config/settings.inc.php",
+			"Shopware 5",
+			"config.php",
+			"engine/Shopware/Application.php",
 		},
 	},
 	&Prestashop7{
 		basePlatform{
-			"Prestashop 7",
+			"Prestashop 1.7+",
 			"app/config/parameters.php",
 			"app/config/parameters.php",
+		},
+	},
+	&Prestashop6{
+		basePlatform{
+			"Prestashop 1.6",
+			"config/settings.inc.php",
+			"config/settings.inc.php",
 		},
 	},
 	&WooCommerce{

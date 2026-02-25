@@ -1,6 +1,8 @@
 package gocommerce
 
 import (
+	"context"
+	"path/filepath"
 	"strconv"
 
 	"github.com/sansecio/gocommerce/phpcfg"
@@ -33,4 +35,20 @@ func (p *Prestashop7) ParseConfig(cfgPath string) (*StoreConfig, error) {
 			Port:   port,
 		},
 	}, nil
+}
+
+func (p *Prestashop7) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
+	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()))
+	if err != nil {
+		return nil, err
+	}
+	return prestashopBaseURLs(ctx, cfg)
+}
+
+func (p *Prestashop7) Version(docroot string) (string, error) {
+	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()))
+	if err != nil {
+		return "", err
+	}
+	return prestashopVersion(cfg)
 }
