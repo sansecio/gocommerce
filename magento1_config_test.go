@@ -31,6 +31,27 @@ func TestParseEmptyPassword(t *testing.T) {
 	assert.Equal(t, "jeroen:@tcp(db:3306)/jeroen_schweigmann?allowOldPasswords=true", dbc.DSN())
 }
 
+func TestParseConfigMissingAdmin(t *testing.T) {
+	m1 := Magento1{}
+	cfg, err := m1.ParseConfig(fixtureBase + "/magento1/app/etc/local.xml.noadmin")
+	assert.NoError(t, err)
+	assert.Equal(t, "", cfg.AdminSlug)
+}
+
+func TestParseConfigWithPrefix(t *testing.T) {
+	m1 := Magento1{}
+	cfg, err := m1.ParseConfig(fixtureBase + "/magento1/app/etc/local.xml.prefix")
+	assert.NoError(t, err)
+	assert.Equal(t, "mage_", cfg.DB.Prefix)
+}
+
+func TestParseConfigMissingDBFields(t *testing.T) {
+	m1 := Magento1{}
+	cfg, err := m1.ParseConfig(fixtureBase + "/magento1/app/etc/local.xml.nodb")
+	assert.Error(t, err)
+	assert.Nil(t, cfg)
+}
+
 // func TestGoogleCloudSocket(t *testing.T) {
 // TODO: Why did we fail colons in host?
 // dbc := dbConfigFromSource(t, fixtureBase+"/magento1/configs/app/etc/local.xml.google-cloud-socket", &magento1)

@@ -2,13 +2,12 @@ package gocommerce
 
 import (
 	"context"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
-
-	"gopkg.in/xmlpath.v2"
 )
 
 type Magento1 struct {
@@ -20,6 +19,52 @@ const (
 	versionRegex = "(?m)public static function getVersionInfo[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',[^=]+=>\\s'(\\d)',"
 )
 
+type m1Config struct {
+	XMLName xml.Name       `xml:"config"`
+	Global  m1ConfigGlobal `xml:"global"`
+	Admin   m1ConfigAdmin  `xml:"admin"`
+}
+
+type m1ConfigGlobal struct {
+	Resources m1ConfigResources `xml:"resources"`
+}
+
+type m1ConfigResources struct {
+	DB           m1ConfigDB           `xml:"db"`
+	DefaultSetup m1ConfigDefaultSetup `xml:"default_setup"`
+}
+
+type m1ConfigDB struct {
+	TablePrefix string `xml:"table_prefix"`
+}
+
+type m1ConfigDefaultSetup struct {
+	Connection m1ConfigConnection `xml:"connection"`
+}
+
+type m1ConfigConnection struct {
+	Host     string `xml:"host"`
+	Username string `xml:"username"`
+	Password string `xml:"password"`
+	DBName   string `xml:"dbname"`
+}
+
+type m1ConfigAdmin struct {
+	Routers m1ConfigRouters `xml:"routers"`
+}
+
+type m1ConfigRouters struct {
+	Adminhtml m1ConfigAdminhtml `xml:"adminhtml"`
+}
+
+type m1ConfigAdminhtml struct {
+	Args m1ConfigArgs `xml:"args"`
+}
+
+type m1ConfigArgs struct {
+	FrontName string `xml:"frontName"`
+}
+
 func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	xmlFile, err := os.Open(cfgPath)
 	if err != nil {
@@ -27,23 +72,17 @@ func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}
 	defer xmlFile.Close()
 
-	root, err := xmlpath.Parse(xmlFile)
-	if err != nil {
+	var cfg m1Config
+	if err := xml.NewDecoder(xmlFile).Decode(&cfg); err != nil {
 		return nil, err
 	}
-	// path := xmlpath.MustCompile("/config/global/resources/db/table_prefix")
 
-	prefix, _ := xmlpath.MustCompile("/config/global/resources/db/table_prefix").String(root)
-	user, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/username").String(root)
-	pass, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/password").String(root)
-	host, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/host").String(root)
-	dbname, _ := xmlpath.MustCompile("/config/global/resources/default_setup/connection/dbname").String(root)
-	slug, _ := xmlpath.MustCompile("/config/admin/routers/adminhtml/args/frontName").String(root)
-
-	if user == "" || dbname == "" {
+	conn := cfg.Global.Resources.DefaultSetup.Connection
+	if conn.Username == "" || conn.DBName == "" {
 		return nil, fmt.Errorf("XML parse error for %s", cfgPath)
 	}
 
+	host := conn.Host
 	port := 3306
 	if h, p, e := parseHostPort(host); p > 0 && e == nil {
 		port = p
@@ -53,13 +92,13 @@ func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	return &StoreConfig{
 		DB: &DBConfig{
 			Host:   host,
-			User:   user,
-			Pass:   pass,
-			Name:   dbname,
-			Prefix: prefix,
+			User:   conn.Username,
+			Pass:   conn.Password,
+			Name:   conn.DBName,
+			Prefix: cfg.Global.Resources.DB.TablePrefix,
 			Port:   port,
 		},
-		AdminSlug: slug,
+		AdminSlug: cfg.Admin.Routers.Adminhtml.Args.FrontName,
 	}, nil
 }
 

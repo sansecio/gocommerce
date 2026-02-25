@@ -1,0 +1,26 @@
+<config>
+    <global>
+        <resources>
+            <db>
+                <table_prefix><![CDATA[mage_]]></table_prefix>
+            </db>
+            <default_setup>
+                <connection>
+                    <host><![CDATA[localhost]]></host>
+                    <username><![CDATA[app]]></username>
+                    <password><![CDATA[secret]]></password>
+                    <dbname><![CDATA[mag1]]></dbname>
+                </connection>
+            </default_setup>
+        </resources>
+    </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <frontName><![CDATA[admin]]></frontName>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+</config>
