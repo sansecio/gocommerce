@@ -2,6 +2,7 @@ package gocommerce
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -25,6 +26,10 @@ func (p *Prestashop6) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	data, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if strings.Contains(string(data), "@deprecated") {
+		return nil, fmt.Errorf("deprecated config, skipping")
 	}
 
 	matches := map[string]string{}
