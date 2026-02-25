@@ -3,6 +3,7 @@ package gocommerce
 import (
 	"context"
 	"errors"
+	"time"
 )
 
 func prestashopBaseURLs(ctx context.Context, cfg *StoreConfig) ([]string, error) {
@@ -37,7 +38,10 @@ func prestashopBaseURLs(ctx context.Context, cfg *StoreConfig) ([]string, error)
 }
 
 func prestashopVersion(cfg *StoreConfig) (string, error) {
-	db, err := ConnectDB(context.Background(), *cfg.DB)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db, err := ConnectDB(ctx, *cfg.DB)
 	if err != nil {
 		return "", err
 	}
