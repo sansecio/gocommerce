@@ -78,14 +78,14 @@ var AllPlatforms = []PlatformInterface{
 	},
 	&Prestashop7{
 		basePlatform{
-			"Prestashop 7",
+			"Prestashop 1.7+",
 			"app/config/parameters.php",
 			"app/config/parameters.php",
 		},
 	},
 	&Prestashop6{
 		basePlatform{
-			"Prestashop 6",
+			"Prestashop 1.6",
 			"config/settings.inc.php",
 			"config/settings.inc.php",
 		},
