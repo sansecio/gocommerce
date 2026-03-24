@@ -39,9 +39,9 @@ func getReturnedArray(ret *stmt.Return) node.Node {
 	return nil
 }
 
-// Removes single quotes if present.
+// Removes surrounding quotes (single or double) if present.
 func unquote(s string) string {
-	if s[0] == '\'' && s[len(s)-1] == '\'' {
+	if len(s) >= 2 && (s[0] == '\'' || s[0] == '"') && s[len(s)-1] == s[0] {
 		return s[1 : len(s)-1]
 	}
 	return s

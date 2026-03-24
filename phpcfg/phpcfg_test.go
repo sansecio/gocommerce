@@ -45,6 +45,43 @@ return [
 	}
 }
 
+func TestParseDoubleQuotedStrings(t *testing.T) {
+	src := `
+<?php
+return [
+    "db" => [
+        "table_prefix" => "",
+        "connection" => [
+            "default" => [
+                "host" => "localhost",
+                "dbname" => "somename123_db",
+                "password" => "aabbccddeeff",
+                "active" => "1",
+                "driver_options" => [
+                    1014 => FALSE
+                ]
+            ]
+        ]
+    ]
+];`
+
+	expected := map[string]string{
+		"root.db.table_prefix":                                "",
+		"root.db.connection.default.host":                     "localhost",
+		"root.db.connection.default.dbname":                   "somename123_db",
+		"root.db.connection.default.password":                 "aabbccddeeff",
+		"root.db.connection.default.active":                   "1",
+		"root.db.connection.default.driver_options.1014":      "FALSE",
+	}
+
+	parsed, err := Parse([]byte(src))
+	if err != nil {
+		t.Error("Parse failed:", err)
+	} else if !cmp.Equal(parsed, expected) {
+		t.Error("Parsed != expected:", cmp.Diff(expected, parsed))
+	}
+}
+
 func TestParseArray(t *testing.T) {
 	src := `
 <?php
