@@ -104,6 +104,13 @@ var AllPlatforms = []PlatformInterface{
 			"system/engine/config.php",
 		},
 	},
+	&JTLShop{
+		basePlatform{
+			"JTL-Shop",
+			"includes/config.JTL-Shop.ini.php",
+			"includes/config.JTL-Shop.ini.php",
+		},
+	},
 }
 
 func (b *basePlatform) Name() string {

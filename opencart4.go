@@ -59,7 +59,7 @@ func (oc4 *OpenCart4) ParseConfig(cfgPath string) (*StoreConfig, error) {
 }
 
 func (oc4 *OpenCart4) BaseURLs(_ context.Context, docroot string) ([]string, error) {
-	cfgPath := filepath.Join(docroot, "config.php")
+	cfgPath := filepath.Join(docroot, oc4.ConfigPath())
 	cfg, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return nil, err
