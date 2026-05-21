@@ -92,7 +92,7 @@ var AllPlatforms = []PlatformInterface{
 	},
 	&WooCommerce{
 		basePlatform{
-			"WooCommerce",
+			"WP/WooCommerce",
 			"wp-config.php",
 			"wp-config.php",
 		},

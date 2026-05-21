@@ -23,7 +23,7 @@ func TestDiscoverStores(t *testing.T) {
 
 	assert.Len(t, stores, 2)
 
-	assert.Equal(t, "WooCommerce", stores[0].Platform.Name())
+	assert.Equal(t, "WP/WooCommerce", stores[0].Platform.Name())
 	assert.Contains(t, stores[0].DocRoot, "discovery/applications/123456789/public_html")
 
 	assert.Equal(t, "Magento 2", stores[1].Platform.Name())
