@@ -92,7 +92,7 @@ var AllPlatforms = []PlatformInterface{
 	},
 	&WooCommerce{
 		basePlatform{
-			"WooCommerce",
+			"WP/WooCommerce",
 			"wp-config.php",
 			"wp-config.php",
 		},
@@ -102,6 +102,13 @@ var AllPlatforms = []PlatformInterface{
 			"OpenCart 4",
 			"config.php",
 			"system/engine/config.php",
+		},
+	},
+	&JTLShop{
+		basePlatform{
+			"JTL-Shop",
+			"includes/config.JTL-Shop.ini.php",
+			"includes/config.JTL-Shop.ini.php",
 		},
 	},
 }
