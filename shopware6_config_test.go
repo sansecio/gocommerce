@@ -5,6 +5,7 @@ import (
 )
 
 func TestConfigToDSN(t *testing.T) {
+	t.Setenv("DATABASE_URL", "")
 	sw6 := Shopware6{}
 	want := DBConfig{
 		Host: "localhost",
@@ -20,6 +21,7 @@ func TestConfigToDSN(t *testing.T) {
 }
 
 func TestConfigWithQuotesToDSN(t *testing.T) {
+	t.Setenv("DATABASE_URL", "")
 	sw6 := Shopware6{}
 	want := DBConfig{
 		Host: "localhost",

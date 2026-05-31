@@ -9,3 +9,4 @@ Go config parsers for several PHP eCommerce platforms:
 - Shopware 5 / 6
 - OpenCart 4
 - JTL-Shop
+- Sylius
