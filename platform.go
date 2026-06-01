@@ -111,6 +111,13 @@ var AllPlatforms = []PlatformInterface{
 			"includes/config.JTL-Shop.ini.php",
 		},
 	},
+	&Sylius{
+		basePlatform{
+			"Sylius",
+			".env",
+			"vendor/sylius/sylius/composer.json",
+		},
+	},
 }
 
 func (b *basePlatform) Name() string {

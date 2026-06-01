@@ -1,0 +1,5 @@
+{
+    "name": "sylius/sylius",
+    "type": "library",
+    "description": "Modern e-commerce for Symfony."
+}

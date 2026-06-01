@@ -1,0 +1,12 @@
+{
+    "packages": [
+        {
+            "name": "sylius/sylius-rector",
+            "version": "v1.0.0"
+        },
+        {
+            "name": "sylius/sylius",
+            "version": "v1.14.4"
+        }
+    ]
+}
