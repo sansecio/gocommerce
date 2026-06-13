@@ -39,6 +39,15 @@ func TestDiscoverSymlinkedStore(t *testing.T) {
 	assert.Contains(t, stores[0].DocRoot, "discovery/sansec.store")
 }
 
+func TestFindStoreAtRootUnreadableConfig(t *testing.T) {
+	root := t.TempDir()
+	// a directory named wp-config.php makes os.ReadFile fail while os.Stat succeeds
+	if err := os.Mkdir(root+"/wp-config.php", 0o755); err != nil {
+		t.Fatal(err)
+	}
+	assert.Nil(t, FindStoreAtRoot(root))
+}
+
 func TestDiscoverStoresEmpty(t *testing.T) {
 	oldHome := os.Getenv("HOME")
 	defer os.Setenv("HOME", oldHome)
