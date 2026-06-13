@@ -125,7 +125,10 @@ func DiscoverStores() []*Store {
 
 func docrootToStore(docroot string, pl PlatformInterface) *Store {
 	cfgPath := filepath.Join(docroot, pl.ConfigPath())
-	cfg, _ := pl.ParseConfig(cfgPath)
+	cfg, err := pl.ParseConfig(cfgPath)
+	if err != nil {
+		return nil
+	}
 	return &Store{docroot, pl, cfg}
 }
 
