@@ -39,13 +39,20 @@ func TestDiscoverSymlinkedStore(t *testing.T) {
 	assert.Contains(t, stores[0].DocRoot, "discovery/sansec.store")
 }
 
+// an unreadable config must not hide the platform, callers keep every check
+// that does not need the database, and reading the empty config is safe.
 func TestFindStoreAtRootUnreadableConfig(t *testing.T) {
 	root := t.TempDir()
 	// a directory named wp-config.php makes os.ReadFile fail while os.Stat succeeds
 	if err := os.Mkdir(root+"/wp-config.php", 0o755); err != nil {
 		t.Fatal(err)
 	}
-	assert.Nil(t, FindStoreAtRoot(root))
+
+	s := FindStoreAtRoot(root)
+	assert.NotNil(t, s)
+	assert.Equal(t, "WP/WooCommerce", s.Platform.Name())
+	assert.Empty(t, s.Config.DB.Prefix)
+	assert.Empty(t, s.Config.DB.DSN())
 }
 
 func TestDiscoverStoresEmpty(t *testing.T) {

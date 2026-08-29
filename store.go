@@ -127,7 +127,7 @@ func docrootToStore(docroot string, pl PlatformInterface) *Store {
 	cfgPath := filepath.Join(docroot, pl.ConfigPath())
 	cfg, err := pl.ParseConfig(cfgPath)
 	if err != nil {
-		return nil
+		cfg = &StoreConfig{DB: &DBConfig{}}
 	}
 	return &Store{docroot, pl, cfg}
 }
