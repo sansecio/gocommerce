@@ -20,9 +20,15 @@ var (
 	// and optional ?query parameters. The DATABASE_URL= prefix is optional so
 	// a bare DSN (from the environment) parses with the same expression.
 	symfonyDBURLRgx = regexp.MustCompile(
-		`(?m)^\s*(?:DATABASE_URL\s*=\s*)?"?(?:pdo-)?mysql://([^:@/]+)(?::([^@]*))?@([^:/?]+)(?::(\d+))?/([^?"\s]+)`)
+		`(?m)^\s*(?:DATABASE_URL\s*=\s*)?"?(?:pdo-)?mysql://([^:@/]+)(?::([^@]*))?@([^:/?]+)(?::(\d*))?/([^?"\s]+)`)
 
 	symfonyAppEnvRgx = regexp.MustCompile(`(?m)^\s*APP_ENV\s*=\s*"?([a-zA-Z0-9_-]+)`)
+
+	// a KEY=VALUE assignment in a .env file, with optional `export ` prefix
+	symfonyEnvLineRgx = regexp.MustCompile(`(?m)^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)[ \t]*=[ \t]*(.*)$`)
+
+	// a variable reference inside a .env value: $VAR, ${VAR} or ${VAR:-default}
+	symfonyVarRefRgx = regexp.MustCompile(`\$(?:\{([A-Za-z_][A-Za-z0-9_]*)(?::[-=]([^}]*))?\}|([A-Za-z_][A-Za-z0-9_]*))`)
 )
 
 // symfonyParseConfig parses a Symfony DATABASE_URL into a StoreConfig. A real
@@ -40,11 +46,82 @@ func symfonyParseConfig(cfgPath string) (*StoreConfig, error) {
 		return nil, err
 	}
 
-	db := parseSymfonyDSN(string(data), kernelEnv(string(data)))
+	vars := symfonyEnvVars(string(data))
+	dsn, ok := vars["DATABASE_URL"]
+	if !ok {
+		dsn = string(data)
+	}
+
+	db := parseSymfonyDSN(expandSymfonyVars(dsn, vars), kernelEnv(string(data)))
 	if db == nil {
 		return nil, fmt.Errorf("could not parse mysql DATABASE_URL in %s", cfgPath)
 	}
 	return &StoreConfig{DB: db}, nil
+}
+
+// symfonyEnvVars collects the KEY=VALUE assignments of a .env file, unquoted,
+// with the last assignment of a key winning as in Symfony's own dotenv
+func symfonyEnvVars(data string) map[string]string {
+	m := symfonyEnvLineRgx.FindAllStringSubmatch(data, -1)
+	vars := make(map[string]string, len(m))
+	for _, v := range m {
+		val := strings.TrimRight(v[2], " \t\r")
+		if lit, ok := unquoteSymfonyValue(val, '\''); ok {
+			vars[v[1]] = strings.ReplaceAll(lit, "$", `\$`)
+			continue
+		}
+		if val2, ok := unquoteSymfonyValue(val, '"'); ok {
+			vars[v[1]] = val2
+			continue
+		}
+
+		if i := strings.Index(val, " #"); i >= 0 {
+			val = strings.TrimRight(val[:i], " \t")
+		}
+		vars[v[1]] = val
+	}
+	return vars
+}
+
+func unquoteSymfonyValue(v string, q byte) (string, bool) {
+	if len(v) < 2 || v[0] != q {
+		return v, false
+	}
+	end := strings.LastIndexByte(v, q)
+	if end == 0 {
+		return v, false
+	}
+	return v[1:end], true
+}
+
+func expandSymfonyVars(s string, vars map[string]string) string {
+	const escaped = "\x00" // shields a literal dollar from every expansion round
+	for range 8 {
+		// also shields the literals that this round's substitutions brought in
+		s = strings.ReplaceAll(s, `\$`, escaped)
+		if !strings.ContainsRune(s, '$') {
+			break
+		}
+		expanded := symfonyVarRefRgx.ReplaceAllStringFunc(s, func(ref string) string {
+			m := symfonyVarRefRgx.FindStringSubmatch(ref)
+			name, fallback := m[1], m[2]
+			if name == "" {
+				name = m[3]
+			}
+			if v := os.Getenv(name); v != "" {
+				return v
+			}
+			if v := vars[name]; v != "" {
+				return v
+			}
+			return fallback
+		})
+		if expanded == s {
+			break
+		}
+		s = expanded
+	}
+	return strings.ReplaceAll(s, escaped, "$")
 }
 
 // parseSymfonyDSN extracts mysql connection details from a string holding a
