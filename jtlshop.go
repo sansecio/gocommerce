@@ -59,6 +59,10 @@ func (j *JTLShop) ParseConfig(cfgPath string) (*StoreConfig, error) {
 }
 
 func (j *JTLShop) BaseURLs(_ context.Context, docroot string) ([]string, error) {
+	return j.BaseURLsFromConfig(docroot)
+}
+
+func (j *JTLShop) BaseURLsFromConfig(docroot string) ([]string, error) {
 	data, err := os.ReadFile(filepath.Join(docroot, j.ConfigPath()))
 	if err != nil {
 		return nil, err

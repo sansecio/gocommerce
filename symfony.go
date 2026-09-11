@@ -94,6 +94,13 @@ func unquoteSymfonyValue(v string, q byte) (string, bool) {
 	return v[1:end], true
 }
 
+// expandSymfonyVars resolves the $VAR, ${VAR} and ${VAR:-default} references of
+// a .env value against the variables of that same file, and against nothing
+// else. A scanned tree is untrusted input, so our own process environment is
+// deliberately not a resolution source: a planted .env referencing
+// ${ECOMSCAN_KEY} would otherwise become the user of a DSN that we then
+// connect to, handing a scanner secret to whoever owns that endpoint.
+// An unresolvable reference expands to its default, or to nothing.
 func expandSymfonyVars(s string, vars map[string]string) string {
 	const escaped = "\x00" // shields a literal dollar from every expansion round
 	for range 8 {
@@ -107,9 +114,6 @@ func expandSymfonyVars(s string, vars map[string]string) string {
 			name, fallback := m[1], m[2]
 			if name == "" {
 				name = m[3]
-			}
-			if v := os.Getenv(name); v != "" {
-				return v
 			}
 			if v := vars[name]; v != "" {
 				return v

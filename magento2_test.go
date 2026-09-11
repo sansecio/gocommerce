@@ -62,3 +62,10 @@ func TestGetMagentoBaseURLsFromConfigNilCtx(t *testing.T) {
 	assert.Nil(t, err)
 	assert.ElementsMatch(t, []string{"https://sansec.io/", "https://api.sansec.io/"}, baseURLs)
 }
+
+// the path ecomscan --skip-database takes: base urls without a database
+func TestGetMagentoBaseURLsFromConfigOnly(t *testing.T) {
+	baseURLs, err := m2store.BaseURLsFromConfig(fixtureBase + "magento2")
+	assert.Nil(t, err)
+	assert.ElementsMatch(t, []string{"https://sansec.io/", "https://api.sansec.io/"}, baseURLs)
+}

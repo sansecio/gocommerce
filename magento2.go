@@ -58,12 +58,11 @@ func (m2 *Magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
 }
 
 func (m2 *Magento2) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
-	cfgPath := filepath.Join(docroot, m2.ConfigPath())
 	urls := []string{}
-	if ud, err := m2.getBaseURLsFromDatabase(ctx, cfgPath); err == nil {
+	if ud, err := m2.getBaseURLsFromDatabase(ctx, filepath.Join(docroot, m2.ConfigPath())); err == nil {
 		urls = append(urls, ud...)
 	}
-	if uc, err := m2.getBaseURLsFromConfig(cfgPath); err == nil {
+	if uc, err := m2.BaseURLsFromConfig(docroot); err == nil {
 		urls = append(urls, uc...)
 	}
 	slices.Sort(urls)
@@ -78,8 +77,8 @@ func urlIsPlaceholder(url string) bool {
 	return strings.HasPrefix(url, "{{") || strings.HasSuffix(url, "}}")
 }
 
-func (m2 *Magento2) getBaseURLsFromConfig(cfgPath string) ([]string, error) {
-	cm, err := phpcfg.ParsePath(cfgPath)
+func (m2 *Magento2) BaseURLsFromConfig(docroot string) ([]string, error) {
+	cm, err := phpcfg.ParsePath(filepath.Join(docroot, m2.ConfigPath()))
 	if err != nil {
 		return nil, err
 	}

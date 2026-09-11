@@ -43,6 +43,14 @@ type (
 		ConfigPath() string
 		UniquePath() string
 	}
+
+	// ConfigBaseURLer is implemented by platforms whose base URLs can be read
+	// from files alone. Callers that must not open a database connection
+	// (ecomscan's --skip-database) use this instead of BaseURLs, so that no
+	// DSN from the scanned tree gets resolved or dialled.
+	ConfigBaseURLer interface {
+		BaseURLsFromConfig(docroot string) ([]string, error)
+	}
 )
 
 var AllPlatforms = []PlatformInterface{
