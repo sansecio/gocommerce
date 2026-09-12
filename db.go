@@ -6,11 +6,9 @@ import (
 	"errors"
 	"os"
 
+	"github.com/VividCortex/mysqlerr"
 	"github.com/go-sql-driver/mysql"
 )
-
-// servers with require_secure_transport=ON reject unencrypted connections
-const erSecureTransportRequired = 3159
 
 var defaultSockets = []string{
 	"/var/run/mysqld/mysqld.sock",
@@ -57,7 +55,7 @@ func dial(ctx context.Context, dsn string) (*sql.DB, error) {
 
 func secureTransportRequired(err error) bool {
 	var e *mysql.MySQLError
-	return errors.As(err, &e) && e.Number == erSecureTransportRequired
+	return errors.As(err, &e) && e.Number == mysqlerr.ER_SECURE_TRANSPORT_REQUIRED
 }
 
 func isSocket(path string) bool {
