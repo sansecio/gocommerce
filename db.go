@@ -3,10 +3,14 @@ package gocommerce
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql" //nolint
+	"github.com/go-sql-driver/mysql"
 )
+
+// servers with require_secure_transport=ON reject unencrypted connections
+const erSecureTransportRequired = 3159
 
 var defaultSockets = []string{
 	"/var/run/mysqld/mysqld.sock",
@@ -26,19 +30,34 @@ func ConnectDB(ctx context.Context, cfg DBConfig) (*sql.DB, error) {
 		}
 	}
 
-	db, err := sql.Open("mysql", cfg.DSN())
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	db, err := dial(ctx, cfg.DSN())
+	if err != nil && secureTransportRequired(err) {
+		// retry encrypted
+		db, err = dial(ctx, cfg.DSN()+"&tls=preferred")
+	}
+	return db, err
+}
+
+func dial(ctx context.Context, dsn string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
 
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	err = db.PingContext(ctx)
-	if err != nil {
+	if err := db.PingContext(ctx); err != nil {
+		_ = db.Close()
 		return nil, err
 	}
 	return db, nil
+}
+
+func secureTransportRequired(err error) bool {
+	var e *mysql.MySQLError
+	return errors.As(err, &e) && e.Number == erSecureTransportRequired
 }
 
 func isSocket(path string) bool {
