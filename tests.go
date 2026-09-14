@@ -20,7 +20,7 @@ func platformByName(t *testing.T, name string) PlatformInterface {
 }
 
 func dbConfigFromSource(_ *testing.T, src string, pl PlatformInterface) *DBConfig {
-	cfg, e := pl.ParseConfig(src)
+	cfg, e := pl.ParseConfig(src, Options{})
 	if e != nil {
 		fmt.Println(e)
 		return nil

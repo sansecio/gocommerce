@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-func prestashopBaseURLs(ctx context.Context, cfg *StoreConfig) ([]string, error) {
-	db, err := ConnectDB(ctx, *cfg.DB)
+func prestashopBaseURLs(ctx context.Context, cfg *StoreConfig, opts Options) ([]string, error) {
+	db, err := ConnectDB(ctx, *cfg.DB, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -37,11 +37,11 @@ func prestashopBaseURLs(ctx context.Context, cfg *StoreConfig) ([]string, error)
 	return nil, errors.New("base url(s) not found in database")
 }
 
-func prestashopVersion(cfg *StoreConfig) (string, error) {
+func prestashopVersion(cfg *StoreConfig, opts Options) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	db, err := ConnectDB(ctx, *cfg.DB)
+	db, err := ConnectDB(ctx, *cfg.DB, opts)
 	if err != nil {
 		return "", err
 	}

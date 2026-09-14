@@ -33,21 +33,21 @@ func TestParseEmptyPassword(t *testing.T) {
 
 func TestParseConfigMissingAdmin(t *testing.T) {
 	m1 := Magento1{}
-	cfg, err := m1.ParseConfig(fixtureBase + "/magento1/app/etc/local.xml.noadmin")
+	cfg, err := m1.ParseConfig(fixtureBase+"/magento1/app/etc/local.xml.noadmin", Options{})
 	assert.NoError(t, err)
 	assert.Equal(t, "", cfg.AdminSlug)
 }
 
 func TestParseConfigWithPrefix(t *testing.T) {
 	m1 := Magento1{}
-	cfg, err := m1.ParseConfig(fixtureBase + "/magento1/app/etc/local.xml.prefix")
+	cfg, err := m1.ParseConfig(fixtureBase+"/magento1/app/etc/local.xml.prefix", Options{})
 	assert.NoError(t, err)
 	assert.Equal(t, "mage_", cfg.DB.Prefix)
 }
 
 func TestParseConfigMissingDBFields(t *testing.T) {
 	m1 := Magento1{}
-	cfg, err := m1.ParseConfig(fixtureBase + "/magento1/app/etc/local.xml.nodb")
+	cfg, err := m1.ParseConfig(fixtureBase+"/magento1/app/etc/local.xml.nodb", Options{})
 	assert.Error(t, err)
 	assert.Nil(t, cfg)
 }

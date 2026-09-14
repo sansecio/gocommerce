@@ -22,7 +22,7 @@ type (
 
 var m2ComposerRgx = regexp.MustCompile(`magento\/product-.*?-edition`)
 
-func (m2 *Magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (m2 *Magento2) ParseConfig(cfgPath string, opts Options) (*StoreConfig, error) {
 	cm, err := phpcfg.ParsePath(cfgPath)
 	if err != nil {
 		return nil, err
@@ -57,10 +57,10 @@ func (m2 *Magento2) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (m2 *Magento2) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
+func (m2 *Magento2) BaseURLs(ctx context.Context, docroot string, opts Options) ([]string, error) {
 	cfgPath := filepath.Join(docroot, m2.ConfigPath())
 	urls := []string{}
-	if ud, err := m2.getBaseURLsFromDatabase(ctx, cfgPath); err == nil {
+	if ud, err := m2.getBaseURLsFromDatabase(ctx, cfgPath, opts); err == nil {
 		urls = append(urls, ud...)
 	}
 	if uc, err := m2.getBaseURLsFromConfig(cfgPath); err == nil {
@@ -70,7 +70,7 @@ func (m2 *Magento2) BaseURLs(ctx context.Context, docroot string) ([]string, err
 	return slices.Compact(urls), nil
 }
 
-func (m2 *Magento2) Version(docroot string) (string, error) {
+func (m2 *Magento2) Version(docroot string, opts Options) (string, error) {
 	return getVersionFromComposer(docroot, m2ComposerRgx)
 }
 
@@ -103,13 +103,13 @@ func (m2 *Magento2) getBaseURLsFromConfig(cfgPath string) ([]string, error) {
 	return nil, errors.New("base url(s) not found in config")
 }
 
-func (m2 *Magento2) getBaseURLsFromDatabase(ctx context.Context, cfgPath string) ([]string, error) {
-	cfg, err := m2.ParseConfig(cfgPath)
+func (m2 *Magento2) getBaseURLsFromDatabase(ctx context.Context, cfgPath string, opts Options) ([]string, error) {
+	cfg, err := m2.ParseConfig(cfgPath, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	db, err := ConnectDB(ctx, *cfg.DB)
+	db, err := ConnectDB(ctx, *cfg.DB, opts)
 	if err != nil {
 		return nil, err
 	}

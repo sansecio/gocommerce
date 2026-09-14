@@ -3,14 +3,14 @@
 package gocommerce
 
 import (
-	"testing"
 	"context"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetMagento1BaseURLsFromDatabase(t *testing.T) {
-	baseURLs, err := m1store.BaseURLs(context.TODO(), fixtureBase+"magento1_integration")
+	baseURLs, err := m1store.BaseURLs(context.TODO(), fixtureBase+"magento1_integration", Options{})
 	assert.Nil(t, err)
 	assert.ElementsMatch(t, []string{"https://app.magento1.test/", "https://second.magento1.test/"}, baseURLs)
 }

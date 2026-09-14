@@ -9,17 +9,14 @@ import (
 
 func TestFindStoreAtRoot(t *testing.T) {
 	root := fixtureBase + "/magento1"
-	s := FindStoreAtRoot(root)
+	s := FindStoreAtRoot(root, Options{})
 	assert.NotNil(t, s)
 	assert.Equal(t, "Magento 1", s.Platform.Name())
 }
 
 func TestDiscoverStores(t *testing.T) {
-	oldHome := os.Getenv("HOME")
-	defer os.Setenv("HOME", oldHome)
-
-	os.Setenv("HOME", fixtureBase+"/discovery")
-	stores := DiscoverStores()
+	t.Setenv("HOME", fixtureBase+"/discovery")
+	stores := DiscoverStores(Options{})
 
 	assert.Len(t, stores, 2)
 
@@ -31,8 +28,8 @@ func TestDiscoverStores(t *testing.T) {
 }
 
 func TestDiscoverSymlinkedStore(t *testing.T) {
-	os.Setenv("HOME", fixtureBase+"/discovery/symlink")
-	stores := DiscoverStores()
+	t.Setenv("HOME", fixtureBase+"/discovery/symlink")
+	stores := DiscoverStores(Options{})
 
 	assert.Len(t, stores, 1)
 	assert.Equal(t, "Magento 2", stores[0].Platform.Name())
@@ -48,7 +45,7 @@ func TestFindStoreAtRootUnreadableConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	s := FindStoreAtRoot(root)
+	s := FindStoreAtRoot(root, Options{})
 	assert.NotNil(t, s)
 	assert.Equal(t, "WP/WooCommerce", s.Platform.Name())
 	assert.Empty(t, s.Config.DB.Prefix)
@@ -56,10 +53,8 @@ func TestFindStoreAtRootUnreadableConfig(t *testing.T) {
 }
 
 func TestDiscoverStoresEmpty(t *testing.T) {
-	oldHome := os.Getenv("HOME")
-	defer os.Setenv("HOME", oldHome)
-	os.Setenv("HOME", "/nonexistant1212123123")
-	stores := DiscoverStores()
+	t.Setenv("HOME", "/nonexistant1212123123")
+	stores := DiscoverStores(Options{})
 	assert.Len(t, stores, 0)
 	assert.NotNil(t, stores)
 }

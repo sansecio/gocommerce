@@ -47,15 +47,18 @@ type m1Config struct {
 	} `xml:"admin"`
 }
 
-func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (m1 *Magento1) ParseConfig(cfgPath string, opts Options) (*StoreConfig, error) {
 	xmlFile, err := os.Open(cfgPath)
 	if err != nil {
 		return nil, err
 	}
-	defer xmlFile.Close()
 
 	var cfg m1Config
-	if err := xml.NewDecoder(xmlFile).Decode(&cfg); err != nil {
+	err = xml.NewDecoder(xmlFile).Decode(&cfg)
+	if closeErr := xmlFile.Close(); err == nil {
+		err = closeErr
+	}
+	if err != nil {
 		return nil, err
 	}
 
@@ -82,15 +85,15 @@ func (m1 *Magento1) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (m1 *Magento1) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
+func (m1 *Magento1) BaseURLs(ctx context.Context, docroot string, opts Options) ([]string, error) {
 	cfgPath := filepath.Join(docroot, m1.ConfigPath())
 
-	cfg, err := m1.ParseConfig(cfgPath)
+	cfg, err := m1.ParseConfig(cfgPath, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	db, err := ConnectDB(ctx, *cfg.DB)
+	db, err := ConnectDB(ctx, *cfg.DB, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +122,7 @@ func (m1 *Magento1) BaseURLs(ctx context.Context, docroot string) ([]string, err
 	return nil, errors.New("base url(s) not found in database")
 }
 
-func (m1 *Magento1) Version(docroot string) (string, error) {
+func (m1 *Magento1) Version(docroot string, opts Options) (string, error) {
 	dat, err := os.ReadFile(filepath.Join(docroot, "app/Mage.php"))
 	if err != nil {
 		return "", err

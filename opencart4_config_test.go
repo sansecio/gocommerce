@@ -15,7 +15,7 @@ func TestOpenCartConfig(t *testing.T) {
 
 func TestOpenCartURL(t *testing.T) {
 	oc4 := platformByName(t, "OpenCart 4")
-	urls, err := oc4.BaseURLs(context.TODO(), fixtureBase+"opencart4")
+	urls, err := oc4.BaseURLs(context.TODO(), fixtureBase+"opencart4", Options{})
 	assert.NoError(t, err)
 	assert.NotEmpty(t, urls)
 	assert.Equal(t, "http://sansec.io/", urls[0])
@@ -23,7 +23,7 @@ func TestOpenCartURL(t *testing.T) {
 
 func TestOpenCartVersion(t *testing.T) {
 	oc4 := platformByName(t, "OpenCart 4")
-	ver, err := oc4.Version(fixtureBase + "opencart4")
+	ver, err := oc4.Version(fixtureBase+"opencart4", Options{})
 	assert.NoError(t, err)
 	assert.Equal(t, "4.0.2.3", ver)
 }

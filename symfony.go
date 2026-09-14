@@ -10,10 +10,6 @@ import (
 	"strings"
 )
 
-// Shared helpers for Symfony-based platforms (Shopware 6, Sylius, ...).
-// They read the database connection from a Symfony DATABASE_URL, either from a
-// real environment variable or from .env file.
-
 var (
 	// matches a mysql DATABASE_URL, ignoring commented lines and the
 	// DATABASE_URL_<SUFFIX> variants, with optional password, optional port
@@ -31,12 +27,9 @@ var (
 	symfonyVarRefRgx = regexp.MustCompile(`\$(?:\{([A-Za-z_][A-Za-z0-9_]*)(?::[-=]([^}]*))?\}|([A-Za-z_][A-Za-z0-9_]*))`)
 )
 
-// symfonyParseConfig parses a Symfony DATABASE_URL into a StoreConfig. A real
-// DATABASE_URL environment variable takes precedence over the .env file,
-// mirroring Symfony's own dotenv override behaviour.
-func symfonyParseConfig(cfgPath string) (*StoreConfig, error) {
-	if dsn := os.Getenv("DATABASE_URL"); dsn != "" {
-		if db := parseSymfonyDSN(dsn, kernelEnv("")); db != nil {
+func symfonyParseConfig(cfgPath string, opts Options) (*StoreConfig, error) {
+	if dsn := opts.Environment["DATABASE_URL"]; dsn != "" {
+		if db := parseSymfonyDSN(dsn, kernelEnv("", opts)); db != nil {
 			return &StoreConfig{DB: db}, nil
 		}
 	}
@@ -52,7 +45,7 @@ func symfonyParseConfig(cfgPath string) (*StoreConfig, error) {
 		dsn = string(data)
 	}
 
-	db := parseSymfonyDSN(expandSymfonyVars(dsn, vars), kernelEnv(string(data)))
+	db := parseSymfonyDSN(expandSymfonyVars(dsn, vars, opts), kernelEnv(string(data), opts))
 	if db == nil {
 		return nil, fmt.Errorf("could not parse mysql DATABASE_URL in %s", cfgPath)
 	}
@@ -94,7 +87,7 @@ func unquoteSymfonyValue(v string, q byte) (string, bool) {
 	return v[1:end], true
 }
 
-func expandSymfonyVars(s string, vars map[string]string) string {
+func expandSymfonyVars(s string, vars map[string]string, opts Options) string {
 	const escaped = "\x00" // shields a literal dollar from every expansion round
 	for range 8 {
 		// also shields the literals that this round's substitutions brought in
@@ -108,8 +101,8 @@ func expandSymfonyVars(s string, vars map[string]string) string {
 			if name == "" {
 				name = m[3]
 			}
-			if v := os.Getenv(name); v != "" {
-				return v
+			if v := opts.Environment[name]; v != "" {
+				return strings.ReplaceAll(v, "$", escaped)
 			}
 			if v := vars[name]; v != "" {
 				return v
@@ -151,11 +144,8 @@ func parseSymfonyDSN(s, env string) *DBConfig {
 	}
 }
 
-// kernelEnv resolves the value Symfony substitutes for %kernel.environment%:
-// a real APP_ENV environment variable wins, else the APP_ENV from the .env
-// contents, else "prod" as a production-scan default.
-func kernelEnv(fileData string) string {
-	if v := os.Getenv("APP_ENV"); v != "" {
+func kernelEnv(fileData string, opts Options) string {
+	if v := opts.Environment["APP_ENV"]; v != "" {
 		return v
 	}
 	if m := symfonyAppEnvRgx.FindStringSubmatch(fileData); m != nil {
@@ -166,8 +156,8 @@ func kernelEnv(fileData string) string {
 
 // symfonyColumnURLs runs a single-column query and collects the non-empty
 // results, the shared mechanics behind every Symfony platform's BaseURLs.
-func symfonyColumnURLs(ctx context.Context, cfg *StoreConfig, query string) ([]string, error) {
-	db, err := ConnectDB(ctx, *cfg.DB)
+func symfonyColumnURLs(ctx context.Context, cfg *StoreConfig, query string, opts Options) ([]string, error) {
+	db, err := ConnectDB(ctx, *cfg.DB, opts)
 	if err != nil {
 		return nil, err
 	}

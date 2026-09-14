@@ -9,6 +9,11 @@ import (
 )
 
 type (
+	Options struct {
+		Environment  map[string]string
+		SkipDatabase bool
+	}
+
 	DBConfig struct {
 		Host   string
 		User   string
@@ -37,9 +42,9 @@ type (
 
 	PlatformInterface interface {
 		Name() string
-		ParseConfig(cfgPath string) (*StoreConfig, error)
-		Version(docroot string) (string, error)
-		BaseURLs(ctx context.Context, docroot string) ([]string, error)
+		ParseConfig(cfgPath string, opts Options) (*StoreConfig, error)
+		Version(docroot string, opts Options) (string, error)
+		BaseURLs(ctx context.Context, docroot string, opts Options) ([]string, error)
 		ConfigPath() string
 		UniquePath() string
 	}
@@ -132,15 +137,15 @@ func (b *basePlatform) UniquePath() string {
 	return b.uniquePath
 }
 
-func (b *basePlatform) ParseConfig(_ string) (*StoreConfig, error) {
+func (b *basePlatform) ParseConfig(_ string, opts Options) (*StoreConfig, error) {
 	return nil, errors.New("not implemented")
 }
 
-func (b *basePlatform) BaseURLs(_ context.Context, _ string) ([]string, error) {
+func (b *basePlatform) BaseURLs(_ context.Context, _ string, opts Options) ([]string, error) {
 	return nil, errors.New("not implemented")
 }
 
-func (b *basePlatform) Version(_ string) (string, error) {
+func (b *basePlatform) Version(_ string, opts Options) (string, error) {
 	return "", errors.New("not implemented")
 }
 

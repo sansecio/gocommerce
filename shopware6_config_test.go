@@ -9,7 +9,6 @@ import (
 )
 
 func TestConfigToDSN(t *testing.T) {
-	t.Setenv("DATABASE_URL", "")
 	sw6 := Shopware6{}
 	want := DBConfig{
 		Host: "localhost",
@@ -25,7 +24,6 @@ func TestConfigToDSN(t *testing.T) {
 }
 
 func TestConfigWithQuotesToDSN(t *testing.T) {
-	t.Setenv("DATABASE_URL", "")
 	sw6 := Shopware6{}
 	want := DBConfig{
 		Host: "localhost",
@@ -41,7 +39,6 @@ func TestConfigWithQuotesToDSN(t *testing.T) {
 }
 
 func TestConfigWithInterpolationToDSN(t *testing.T) {
-	t.Setenv("DATABASE_URL", "")
 	sw6 := Shopware6{}
 	want := DBConfig{
 		Host: "db.internal",
@@ -57,7 +54,6 @@ func TestConfigWithInterpolationToDSN(t *testing.T) {
 }
 
 func TestFindStoreAtRootShopware6(t *testing.T) {
-	t.Setenv("DATABASE_URL", "")
 	root := t.TempDir()
 	marker := filepath.Join(root, platformByName(t, "Shopware 6").UniquePath())
 	if err := os.MkdirAll(filepath.Dir(marker), 0o755); err != nil {
@@ -74,7 +70,7 @@ func TestFindStoreAtRootShopware6(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	s := FindStoreAtRoot(root)
+	s := FindStoreAtRoot(root, Options{})
 	assert.NotNil(t, s)
 	assert.Equal(t, "Shopware 6", s.Platform.Name())
 	assert.Equal(t, "caseys", s.Config.DB.User)

@@ -20,7 +20,7 @@ var wpLookupRgx = map[string]string{
 	"prefix": `$?table_prefix\s*=\s*['"]([^']*?)['"]\s*;`,
 }
 
-func (w *WooCommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (w *WooCommerce) ParseConfig(cfgPath string, opts Options) (*StoreConfig, error) {
 	data, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return nil, err
@@ -54,13 +54,13 @@ func (w *WooCommerce) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (w *WooCommerce) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
-	cfg, err := w.ParseConfig(filepath.Join(docroot, w.ConfigPath()))
+func (w *WooCommerce) BaseURLs(ctx context.Context, docroot string, opts Options) ([]string, error) {
+	cfg, err := w.ParseConfig(filepath.Join(docroot, w.ConfigPath()), opts)
 	if err != nil {
 		return nil, err
 	}
 
-	db, err := ConnectDB(ctx, *cfg.DB)
+	db, err := ConnectDB(ctx, *cfg.DB, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (w *WooCommerce) BaseURLs(ctx context.Context, docroot string) ([]string, e
 	return []string{url}, nil
 }
 
-func (w *WooCommerce) Version(docroot string) (string, error) {
+func (w *WooCommerce) Version(docroot string, opts Options) (string, error) {
 	re := regexp.MustCompile(`\$wp_version\s*=\s*'([^']+)';`)
 	data, err := os.ReadFile(filepath.Join(docroot, "wp-includes", "version.php"))
 	if err != nil {

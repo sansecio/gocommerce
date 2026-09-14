@@ -26,7 +26,7 @@ var (
 	}
 )
 
-func (j *JTLShop) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (j *JTLShop) ParseConfig(cfgPath string, opts Options) (*StoreConfig, error) {
 	data, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (j *JTLShop) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (j *JTLShop) BaseURLs(_ context.Context, docroot string) ([]string, error) {
+func (j *JTLShop) BaseURLs(_ context.Context, docroot string, opts Options) ([]string, error) {
 	data, err := os.ReadFile(filepath.Join(docroot, j.ConfigPath()))
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (j *JTLShop) BaseURLs(_ context.Context, docroot string) ([]string, error) 
 	return []string{m[1]}, nil
 }
 
-func (j *JTLShop) Version(docroot string) (string, error) {
+func (j *JTLShop) Version(docroot string, opts Options) (string, error) {
 	data, err := os.ReadFile(filepath.Join(docroot, "includes", "defines_inc.php"))
 	if err != nil {
 		return "", err

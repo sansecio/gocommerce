@@ -15,14 +15,14 @@ func TestJTLShopConfig(t *testing.T) {
 
 func TestJTLShopURL(t *testing.T) {
 	jtl := platformByName(t, "JTL-Shop")
-	urls, err := jtl.BaseURLs(context.TODO(), fixtureBase+"jtlshop")
+	urls, err := jtl.BaseURLs(context.TODO(), fixtureBase+"jtlshop", Options{})
 	assert.NoError(t, err)
 	assert.Equal(t, []string{"http://sansec.io"}, urls)
 }
 
 func TestJTLShopVersion(t *testing.T) {
 	jtl := platformByName(t, "JTL-Shop")
-	ver, err := jtl.Version(fixtureBase + "jtlshop")
+	ver, err := jtl.Version(fixtureBase+"jtlshop", Options{})
 	assert.NoError(t, err)
 	assert.Equal(t, "5.5.2", ver)
 }
