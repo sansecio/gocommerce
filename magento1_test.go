@@ -24,7 +24,7 @@ func TestM1Configs(t *testing.T) {
 
 	for _, test := range tests {
 		src := fixtureBase + "magento1/app/etc/" + test.path
-		cfg, err := m1store.ParseConfig(src)
+		cfg, err := m1store.ParseConfig(src, Options{})
 		assert.NoError(t, err)
 		assert.Equal(t, test.want, cfg.DB.DSN())
 		assert.Equal(t, test.slug, cfg.AdminSlug)
@@ -32,13 +32,13 @@ func TestM1Configs(t *testing.T) {
 }
 
 func TestM1BogusConfig(t *testing.T) {
-	cfg, err := m1store.ParseConfig(fixtureBase + "magento1/app/etc/local.xml.bogus")
+	cfg, err := m1store.ParseConfig(fixtureBase+"magento1/app/etc/local.xml.bogus", Options{})
 	assert.Error(t, err)
 	assert.Nil(t, cfg)
 }
 
 func TestM1Version(t *testing.T) {
-	version, err := m1store.Version(fixtureBase + "magento1")
+	version, err := m1store.Version(fixtureBase+"magento1", Options{})
 	assert.Nil(t, err)
 	assert.Equal(t, "1.9.4.5", version)
 }

@@ -12,7 +12,7 @@ type Prestashop7 struct {
 	basePlatform
 }
 
-func (p *Prestashop7) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (p *Prestashop7) ParseConfig(cfgPath string, opts Options) (*StoreConfig, error) {
 	cm, err := phpcfg.ParsePath(cfgPath)
 	if err != nil {
 		return nil, err
@@ -37,18 +37,18 @@ func (p *Prestashop7) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (p *Prestashop7) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
-	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()))
+func (p *Prestashop7) BaseURLs(ctx context.Context, docroot string, opts Options) ([]string, error) {
+	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()), opts)
 	if err != nil {
 		return nil, err
 	}
-	return prestashopBaseURLs(ctx, cfg)
+	return prestashopBaseURLs(ctx, cfg, opts)
 }
 
-func (p *Prestashop7) Version(docroot string) (string, error) {
-	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()))
+func (p *Prestashop7) Version(docroot string, opts Options) (string, error) {
+	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()), opts)
 	if err != nil {
 		return "", err
 	}
-	return prestashopVersion(cfg)
+	return prestashopVersion(cfg, opts)
 }

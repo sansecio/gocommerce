@@ -10,13 +10,19 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
+var ErrDatabaseDisabled = errors.New("database access disabled")
+
 var defaultSockets = []string{
 	"/var/run/mysqld/mysqld.sock",
 	"/var/lib/mysql/mysql.sock",
 }
 
 // NB copy StoreConfig, as we may modify it
-func ConnectDB(ctx context.Context, cfg DBConfig) (*sql.DB, error) {
+func ConnectDB(ctx context.Context, cfg DBConfig, opts Options) (*sql.DB, error) {
+	if opts.SkipDatabase {
+		return nil, ErrDatabaseDisabled
+	}
+
 	// Mimic libmysql behavior, where "localhost" is overridden with
 	// system specific unix socket.
 	if cfg.Host == "localhost" || cfg.Host == "" {

@@ -9,7 +9,7 @@ import (
 
 func TestWooCommerceVersion(t *testing.T) {
 	wc := WooCommerce{}
-	ver, err := wc.Version(filepath.Join(fixtureBase, "wordpress"))
+	ver, err := wc.Version(filepath.Join(fixtureBase, "wordpress"), Options{})
 	assert.NoError(t, err)
 	assert.Equal(t, "6.7.1", ver)
 }

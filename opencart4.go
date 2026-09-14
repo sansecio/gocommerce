@@ -26,7 +26,7 @@ var (
 	}
 )
 
-func (oc4 *OpenCart4) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (oc4 *OpenCart4) ParseConfig(cfgPath string, opts Options) (*StoreConfig, error) {
 	data, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (oc4 *OpenCart4) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (oc4 *OpenCart4) BaseURLs(_ context.Context, docroot string) ([]string, error) {
+func (oc4 *OpenCart4) BaseURLs(_ context.Context, docroot string, opts Options) ([]string, error) {
 	cfgPath := filepath.Join(docroot, oc4.ConfigPath())
 	cfg, err := os.ReadFile(cfgPath)
 	if err != nil {
@@ -73,7 +73,7 @@ func (oc4 *OpenCart4) BaseURLs(_ context.Context, docroot string) ([]string, err
 	return []string{string(match[1])}, nil
 }
 
-func (oc4 *OpenCart4) Version(docroot string) (string, error) {
+func (oc4 *OpenCart4) Version(docroot string, opts Options) (string, error) {
 	cfgPath := filepath.Join(docroot, "admin", "index.php")
 	cfg, err := os.ReadFile(cfgPath)
 	if err != nil {

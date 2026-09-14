@@ -46,13 +46,13 @@ func (s *Store) ConfigPath() string {
 	return filepath.Join(s.DocRoot, s.Platform.ConfigPath())
 }
 
-func FindStoreAtRoot(docroot string) *Store {
+func FindStoreAtRoot(docroot string, opts Options) *Store {
 	for _, pl := range AllPlatforms {
 		path := filepath.Join(docroot, pl.UniquePath())
 		if !pathExists(path) {
 			continue
 		}
-		if s := docrootToStore(docroot, pl); s != nil {
+		if s := docrootToStore(docroot, pl, opts); s != nil {
 			return s
 		}
 	}
@@ -61,13 +61,13 @@ func FindStoreAtRoot(docroot string) *Store {
 
 // For recursively walking the filesystem:
 // derive a store from a uniquely identifying path
-func FindStoreAtUniquePath(path string) *Store {
+func FindStoreAtUniquePath(path string, opts Options) *Store {
 	for _, pl := range AllPlatforms {
 		if !strings.HasSuffix(path, pl.UniquePath()) {
 			continue
 		}
 		docroot := path[:len(path)-len(pl.UniquePath())-1]
-		if s := docrootToStore(docroot, pl); s != nil {
+		if s := docrootToStore(docroot, pl, opts); s != nil {
 			return s
 		}
 
@@ -113,19 +113,19 @@ func findDocRoots() []string {
 }
 
 // DiscoverStores searches several common docroot locations for stores
-func DiscoverStores() []*Store {
+func DiscoverStores(opts Options) []*Store {
 	stores := []*Store{}
 	for _, p := range findDocRoots() {
-		if s := FindStoreAtRoot(p); s != nil {
+		if s := FindStoreAtRoot(p, opts); s != nil {
 			stores = append(stores, s)
 		}
 	}
 	return stores
 }
 
-func docrootToStore(docroot string, pl PlatformInterface) *Store {
+func docrootToStore(docroot string, pl PlatformInterface, opts Options) *Store {
 	cfgPath := filepath.Join(docroot, pl.ConfigPath())
-	cfg, err := pl.ParseConfig(cfgPath)
+	cfg, err := pl.ParseConfig(cfgPath, opts)
 	if err != nil {
 		cfg = &StoreConfig{DB: &DBConfig{}}
 	}

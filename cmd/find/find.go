@@ -9,12 +9,13 @@ import (
 )
 
 func main() {
+	opts := gocommerce.Options{}
 	var stores []*gocommerce.Store
 	if len(os.Args) <= 1 {
-		stores = gocommerce.DiscoverStores()
+		stores = gocommerce.DiscoverStores(opts)
 	} else {
 		for _, arg := range os.Args[1:] {
-			if store := gocommerce.FindStoreAtRoot(arg); store != nil {
+			if store := gocommerce.FindStoreAtRoot(arg, opts); store != nil {
 				stores = append(stores, store)
 			}
 		}
@@ -22,7 +23,7 @@ func main() {
 
 	fmt.Println("Found", len(stores), "stores")
 	for _, store := range stores {
-		ver, err := store.Platform.Version(store.DocRoot)
+		ver, err := store.Platform.Version(store.DocRoot, opts)
 		if err != nil {
 			ver = "unknown"
 		}
@@ -31,7 +32,7 @@ func main() {
 			fmt.Printf("DBC: %+v\n", store.Config.DB)
 		}
 
-		if urls, err := store.Platform.BaseURLs(context.Background(), store.DocRoot); err == nil && len(urls) > 0 {
+		if urls, err := store.Platform.BaseURLs(context.Background(), store.DocRoot, opts); err == nil && len(urls) > 0 {
 			fmt.Println("Base URLs:")
 			for _, url := range urls {
 				fmt.Printf("- %s\n", url)

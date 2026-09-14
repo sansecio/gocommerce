@@ -22,7 +22,7 @@ var p6LookupRgx = map[string]string{
 	"prefix": `define\('_DB_PREFIX_\',\s?'([^']+)'\);`,
 }
 
-func (p *Prestashop6) ParseConfig(cfgPath string) (*StoreConfig, error) {
+func (p *Prestashop6) ParseConfig(cfgPath string, opts Options) (*StoreConfig, error) {
 	data, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return nil, err
@@ -65,18 +65,18 @@ func (p *Prestashop6) ParseConfig(cfgPath string) (*StoreConfig, error) {
 	}, nil
 }
 
-func (p *Prestashop6) BaseURLs(ctx context.Context, docroot string) ([]string, error) {
-	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()))
+func (p *Prestashop6) BaseURLs(ctx context.Context, docroot string, opts Options) ([]string, error) {
+	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()), opts)
 	if err != nil {
 		return nil, err
 	}
-	return prestashopBaseURLs(ctx, cfg)
+	return prestashopBaseURLs(ctx, cfg, opts)
 }
 
-func (p *Prestashop6) Version(docroot string) (string, error) {
-	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()))
+func (p *Prestashop6) Version(docroot string, opts Options) (string, error) {
+	cfg, err := p.ParseConfig(filepath.Join(docroot, p.ConfigPath()), opts)
 	if err != nil {
 		return "", err
 	}
-	return prestashopVersion(cfg)
+	return prestashopVersion(cfg, opts)
 }
