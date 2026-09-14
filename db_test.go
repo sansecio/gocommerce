@@ -1,6 +1,7 @@
 package gocommerce
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net"
@@ -23,18 +24,24 @@ func TestSecureTransportRequired(t *testing.T) {
 func TestConnectDBDisabledDoesNotDial(t *testing.T) {
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
-	defer listener.Close()
+	t.Cleanup(func() {
+		if err := listener.Close(); err != nil && !errors.Is(err, net.ErrClosed) {
+			t.Errorf("close listener: %v", err)
+		}
+	})
 	accepted := make(chan error, 1)
 	go func() {
 		conn, err := listener.Accept()
 		if err == nil {
-			conn.Close()
+			if err := conn.Close(); err != nil {
+				t.Errorf("close unexpected connection: %v", err)
+			}
 		}
 		accepted <- err
 	}()
 
 	addr := listener.Addr().(*net.TCPAddr)
-	db, err := ConnectDB(nil, DBConfig{
+	db, err := ConnectDB(context.Background(), DBConfig{
 		Host: "127.0.0.1",
 		Port: addr.Port,
 		User: "user",

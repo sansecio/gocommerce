@@ -15,10 +15,7 @@ func TestFindStoreAtRoot(t *testing.T) {
 }
 
 func TestDiscoverStores(t *testing.T) {
-	oldHome := os.Getenv("HOME")
-	defer os.Setenv("HOME", oldHome)
-
-	os.Setenv("HOME", fixtureBase+"/discovery")
+	t.Setenv("HOME", fixtureBase+"/discovery")
 	stores := DiscoverStores(Options{})
 
 	assert.Len(t, stores, 2)
@@ -31,7 +28,7 @@ func TestDiscoverStores(t *testing.T) {
 }
 
 func TestDiscoverSymlinkedStore(t *testing.T) {
-	os.Setenv("HOME", fixtureBase+"/discovery/symlink")
+	t.Setenv("HOME", fixtureBase+"/discovery/symlink")
 	stores := DiscoverStores(Options{})
 
 	assert.Len(t, stores, 1)
@@ -56,9 +53,7 @@ func TestFindStoreAtRootUnreadableConfig(t *testing.T) {
 }
 
 func TestDiscoverStoresEmpty(t *testing.T) {
-	oldHome := os.Getenv("HOME")
-	defer os.Setenv("HOME", oldHome)
-	os.Setenv("HOME", "/nonexistant1212123123")
+	t.Setenv("HOME", "/nonexistant1212123123")
 	stores := DiscoverStores(Options{})
 	assert.Len(t, stores, 0)
 	assert.NotNil(t, stores)

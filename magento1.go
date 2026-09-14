@@ -52,10 +52,13 @@ func (m1 *Magento1) ParseConfig(cfgPath string, opts Options) (*StoreConfig, err
 	if err != nil {
 		return nil, err
 	}
-	defer xmlFile.Close()
 
 	var cfg m1Config
-	if err := xml.NewDecoder(xmlFile).Decode(&cfg); err != nil {
+	err = xml.NewDecoder(xmlFile).Decode(&cfg)
+	if closeErr := xmlFile.Close(); err == nil {
+		err = closeErr
+	}
+	if err != nil {
 		return nil, err
 	}
 
